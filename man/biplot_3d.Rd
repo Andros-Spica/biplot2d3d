@@ -28,7 +28,7 @@ biplot_3d(ordination_object, ordination_method = "PCA", groups = NULL,
   subtitle_font = 2, subtitle_adj = 0, point_type = "point",
   point_label = NULL, point_size = 5, point_alpha = 1,
   point_label_cex = 0.8, point_label_font = 3, point_label_adj = c(0.5,
-  0.5), point_label_alpha = 1, group_colors = NULL,
+  0.5), point_label_alpha = 1, group_color = NULL,
   group_representation = NULL, ellipsoid_type = "wire and shade",
   ellipsoid_level = 0.95, ellipsoid_wire_alpha = 0.2,
   ellipsoid_wire_lit = FALSE, ellipsoid_shade_alpha = 0.1,
@@ -160,8 +160,8 @@ in \code{\link[rgl]{points3d}}}
 \item{point_label_cex, point_label_font, point_label_adj, point_label_alpha}{The text parameters and the alpha of the arrows' labels.
 (\code{\link[rgl]{text3d}}, \code{\link[rgl]{rgl.material}}).}
 
-\item{group_colors}{A vector containing the colors to be
-used in each group (applied to points, labels, stars
+\item{group_color}{A vector containing the color or colors
+to be used in each group (applied to points, labels, stars
 and ellipsoids).}
 
 \item{group_representation}{Character, indicating which group

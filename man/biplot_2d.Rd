@@ -5,40 +5,41 @@
 \title{2D biplot}
 \usage{
 biplot_2d(ordination_object, ordination_method = "PCA", groups = NULL,
-  vips = NULL, show_group_legend = FALSE, show_vip_legend = TRUE,
-  show_arrows = TRUE, show_fitAnalysis = TRUE, bkg_cex = 1,
-  bkg_mar = c(0, 0, 0, 0), bkg_lwd = 2, bkg_font = 3, bkg_adj = 0.5,
+  vips = NULL, show_grid = TRUE, show_axes = TRUE,
+  show_group_legend = FALSE, show_vip_legend = TRUE, show_arrows = TRUE,
+  show_fitAnalysis = TRUE, grid_cex = 1, grid_font = 3, grid_adj = 0.5,
   invert_coordinates = c(FALSE, FALSE), xlim = NULL, ylim = NULL,
   x_title = "", y_title = "", title_cex = 1, title_font = 2,
-  title_adj = 0.5, subtitle = NULL, subtitle_cex = 1,
-  point_type = "point", point_pch = 1, point_size = 1,
+  title_adj = 0.5, subtitle = NULL, subtitle_position = "bottomleft",
+  subtitle_cex = 1, point_type = "point", point_pch = 1, point_size = 1,
   point_label = NULL, point_label_cex = 1, point_label_font = 3,
   point_label_adj = c(0.5, 0.5), point_label_adj_override = NULL,
-  group_color = "black", group_cstar = 1, group_cellipse = 1,
-  group_clabel = 1, group_legend_title = "groups",
-  group_legend_title_pos = c(0.5, 0.85), group_legend_title_cex = 2,
-  group_legend_title_font = 3, group_legend_title_adj = 0.5,
-  group_legend_box_color = "white", group_legend_key_pch = 15,
-  group_legend_key_cex = 1, group_legend_key_lwd = 1,
-  group_legend_key_margin = 0.15, group_legend_text_margin = 0.25,
-  group_legend_text_color = "black", group_legend_text_cex = 2,
-  group_legend_text_font = 1, group_legend_text_adj = 0,
-  vip_color = "black", vip_pch = c(0, 1, 5, 2, 6, 4, 3), vip_cex = c(5, 5,
-  5, 5, 5, 3, 3), vip_lwd = 5, vip_font = 1, vip_adj = c(0.5, 0.5),
-  vip_legend_title = "VIPs", vip_legend_title_pos = c(0.5, 0.85),
-  vip_legend_title_cex = 2, vip_legend_title_font = 3,
-  vip_legend_title_adj = 0.5, vip_legend_box_color = "white",
-  vip_legend_key_cex = 0.8, vip_legend_key_margin = 0.15,
-  vip_legend_text_cex = 2, vip_legend_text_font = 1,
-  vip_legend_text_adj = 0, vip_legend_text_margin = 0.25,
-  arrow_color = "darkorange", arrow_mim_dist = 0, arrow_cex = 0.1,
-  arrow_lwd = 2, arrow_label_cex = 1, arrow_label_color = "black",
-  arrow_label_font = 1, arrow_label_adj = c(0.5, 0.5),
-  arrow_label_adj_override = NULL, fitAnalysis_cex = 1,
-  fitAnalysis_lwd = 3, fitAnalysis_screePlot_color = "white",
+  group_color = "black", group_star_cex = 1, group_ellipse_cex = 1,
+  group_ellipse_axes = FALSE, group_label_cex = 1,
+  group_legend_title = "groups", group_legend_title_pos = c(0.5, 0.85),
+  group_legend_title_cex = 1, group_legend_title_font = 3,
+  group_legend_title_adj = 0.5, group_legend_box_color = "white",
+  group_legend_key_pch = 15, group_legend_key_cex = 1,
+  group_legend_key_lwd = 1, group_legend_key_margin = 0.15,
+  group_legend_text_margin = 0.25, group_legend_text_color = "black",
+  group_legend_text_cex = 1, group_legend_text_font = 1,
+  group_legend_text_adj = 0, vip_color = "black", vip_pch = c(0, 1, 5, 2,
+  6, 4, 3), vip_cex = c(5, 5, 5, 5, 5, 3, 3), vip_lwd = 5, vip_font = 1,
+  vip_adj = c(0.5, 0.5), vip_legend_title = "VIPs",
+  vip_legend_title_pos = c(0.5, 0.85), vip_legend_title_cex = 2,
+  vip_legend_title_font = 3, vip_legend_title_adj = 0.5,
+  vip_legend_box_color = "white", vip_legend_key_cex = 0.8,
+  vip_legend_key_margin = 0.15, vip_legend_text_cex = 2,
+  vip_legend_text_font = 1, vip_legend_text_adj = 0,
+  vip_legend_text_margin = 0.25, arrow_color = "darkorange",
+  arrow_mim_dist = 0, arrow_cex = 0.1, arrow_lwd = 2,
+  arrow_label_cex = 1, arrow_label_color = "black", arrow_label_font = 1,
+  arrow_label_adj = c(0.5, 0.5), arrow_label_adj_override = NULL,
+  fitAnalysis_cex = 1, fitAnalysis_lwd = 3,
+  fitAnalysis_screePlot_color = "white",
   fitAnalysis_stress_p_color = "darkgrey",
   fitAnalysis_stress_l_color = "black", test_text = NULL, test_cex = 1,
-  test_font = 1, test_adj = 0.5, bkg_fig = c(0, 1, 0, 1),
+  test_font = 1, test_adj = 0.5, main_fig = c(0, 1, 0, 1),
   group_legend_fig = c(0.8, 0.99, 0.6, 0.9), vip_legend_fig = c(0.78, 0.99,
   0.3, 0.55), arrow_fig = c(0.69, 0.99, 0.01, 0.31),
   fitAnalysis_fig = c(0.02, 0.35, 0.06, 0.25), test_fig = c(0, 0.3, 0.8, 1),
@@ -71,11 +72,15 @@ assignation of each point.}
 \item{vips}{A list of logical (Boolean) vectors identifying
 "Very Important Points" under different methods or criteria.}
 
+\item{show_grid}{Logical, wheter to display the background grid.}
+
+\item{show_axes}{Logical, wheter to display the axes.}
+
 \item{show_group_legend}{Logical, whether to display
-a legend for groups?}
+a legend for groups.}
 
 \item{show_vip_legend}{Logical, whether to display a
-legend for vip criteria?}
+legend for vip criteria.}
 
 \item{show_arrows}{Logical, whether to show variable
 covariance arrows.}
@@ -84,9 +89,8 @@ covariance arrows.}
 fit analysis plot corresponding to the ordination method
 given (Scree plot or Shepard plot).}
 
-\item{bkg_cex, bkg_mar, bkg_lwd, bkg_font, bkg_adj}{The scale,
-margin, line width, font type, and text justification of
-the background elements.}
+\item{grid_cex, grid_font, grid_adj}{The scale, font type,
+and text justification of the grid notation.}
 
 \item{invert_coordinates}{Logical, vector of length two
 expressing which dimensions, if any, must be inverted
@@ -107,6 +111,11 @@ in the bottom-left corner of the plot
 (\code{csub} in \code{\link[ade4]{s.class}}).
 If equals NULL, a default subtitle is displayed present the
 R-Squared of the 2D fit respect to the original distances.}
+
+\item{subtitle_position}{Character, value indicating the
+position of the subtitle in the main plot ("topleft",
+"topright", "bottomleft", and "bottomright"; see
+\code{\link[ade4]{s.class}}).}
 
 \item{subtitle_cex}{the font size of the
 subtitle (\code{csub} in
@@ -142,11 +151,15 @@ are referred in the ordination object.}
 be used in each group (applied to points, labels,
 stars and ellipses).}
 
-\item{group_cstar, group_cellipse, group_clabel}{The size
-or scale of the stars, ellipses, and labels representing
-groups passed to \code{\link[ade4]{s.class}} of the
-\code{ade4} package. Zero values render these
+\item{group_star_cex, group_ellipse_cex, group_label_cex}{The
+size or scale of the stars, ellipses, and labels
+representing groups passed to \code{\link[ade4]{s.class}}
+of the \code{ade4} package. Zero values render these
 elements invisible.}
+
+\item{group_ellipse_axes}{Logical, wheter to show
+the ellipses axes, passed to \code{axesell} in
+\code{\link[ade4]{s.class}} of the \code{ade4} package.}
 
 \item{group_legend_title}{Character, the title of the
 group legend. If equal NULL or "", no title is displayed.}
@@ -238,7 +251,7 @@ text presenting the results of statistical tests.}
 the text with the test results
 (\code{\link[graphics]{par}}).}
 
-\item{bkg_fig, group_legend_fig, vip_legend_fig, fitAnalysis_fig, test_fig, x_title_fig, y_title_fig}{The
+\item{main_fig, group_legend_fig, vip_legend_fig, fitAnalysis_fig, test_fig, x_title_fig, y_title_fig}{The
 \code{fig} parameter (\code{\link[graphics]{par}})
 to place in the display region of the graphics device,
 respectively, the main plot, the group and vip legends,
@@ -304,27 +317,48 @@ pca <- princomp(iris[, 1:4])
 biplot_2d(pca, groups = iris$Species)
 
 # ---------------------------------------------------------
-# Plot groups as ellipsoids, make group label invisible and
-# add a group factor legend with no title.
-# Customize the covariance arrows default setting.
-
-biplot_3d(pca,
+# Plot groups as different point types (pch),
+# make group label invisible and add a group
+# legend with a a custom title.
+biplot_2d(pca,
           groups = iris$Species,
-          group_representation = "ellipsoids",
-          ellipsoid_label_alpha = 0,
-          show_group_legend = TRUE,
-          group_legend_title = "",
-          arrow_center_pos = c(.5, 0, .5),
-          arrow_body_length = 2,
-          arrow_body_width = 2,
-          view_theta = 0,
-          view_zoom = 0.9)
+          point_pch = c(1, 3, 2),
+          group_cstar = 0,
+          group_cellipse = 0,
+          group_clabel = 0,
+          show_group_legend = T,
+          group_legend_title = "Species")
 
 # ---------------------------------------------------------
-# Plot observations using their names and groups as stars but adding a
-# legend instead of labels.
-# Modify the aspect to normalize the variability of axes and do not show
-# them. Zoom out a little.
+# Polish covariance arrows
+# Abbreviate variables names
+dimnames(pca$loadings)[[1]] <- c("SL", "SW", "PL", "PW")
+# Set a specific justification (adj) for each variable label
+arrow_label_adj_override <- rbind(c(-0.1, 0),
+                                  c(-0.1, 0.5),
+                                  c(0.5, 1.3),
+                                  c(0.5, 1.3))
+row.names(arrow_label_adj_override) <-
+   dimnames(pca$loadings)[[1]]
+# Plot: arrows with different colors and
+# without the background grid
+biplot_2d(pca,
+          groups = iris$Species,
+          point_pch = c(1, 3, 2),
+          group_cstar = 0,
+          group_cellipse = 0,
+          group_clabel = 0,
+          show_group_legend = T,
+          group_legend_title = "Species",
+          arrow_color = c("orange",
+                          "blue",
+                          "red",
+                          "green"),
+          arrow_label_adj_override = arrow_label_adj_override,
+          show_grid = FALSE)
+
+# ---------------------------------------------------------
+# Plot observations using their names
 biplot_3d(pca, groups = iris$Species,
           point_type = "label", point_label = row.names(iris),
           star_label_alpha = 0,
