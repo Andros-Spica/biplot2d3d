@@ -1,0 +1,29 @@
+Package: biplots2d3d
+Type: Package
+Title: Create and Customize Ordination Plots (Biplots) in 2D and 3D (using rgl)
+Version: 0.0.0.9000
+Authors@R: person("Andreas", "Angourakis", email = "andros.spica@gmail.com",
+                  role = c("aut", "cre"))
+Description: This package allows the user to generate fully-customized two and three
+    dimensional scatter plots, especially ordination plots or biplots.
+    For example, it can be used for displaying the first two/three principal
+    components of a Principal Components Analysis (points), together with
+    the respective variable loadings (arrows). Mainly, the ade4 and rgl packages
+    are used to built 2d and 3d plots, respectively. The biplots2d3d package
+    centralizes the control over many options available in these packages
+    (and others), organizing them exhastively into parameters of higher level
+    functions, such as biplot2Dim and biplot3Dim.
+License: MIT + file LICENSE
+URL: https://github.com/Andros-Spica/biplot2d3d
+LazyData: TRUE
+RoxygenNote: 5.0.1
+Imports:
+  ade4,
+  heplots,
+  rgl,
+  extrafont
+Suggests:
+    knitr,
+    rmarkdown,
+    vegan
+VignetteBuilder: knitr
