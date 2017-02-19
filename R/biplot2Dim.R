@@ -2,8 +2,8 @@
 #' 2D biplot
 #'
 #' Generates a 2D biplot representing the default
-#' points/scores and loadings of an ordination object, e.g. produced by
-#' \code{\link[stats]{princomp}}).
+#' points/scores and loadings of an ordination object,
+#' such as a PCA produced by \code{\link[stats]{princomp}}).
 #'
 #' @param ordination_object A R object containing a
 #'    direct and named reference to default ordination
@@ -21,11 +21,33 @@
 #'    (default), "PCoA" for Principal Coordinates Analysis,
 #'    "NMDS" for Non-metric Multidimensional Scaling, and
 #'    "LDA" for Linear Discriminant Analysis.
+#'
+#' @param biplot_type Character, indicating the type of
+#'    biplot transformation of data: "default" and
+#'    "pc.biplot", corresponding to the transformations
+#'    performed in \code{\link[stats]{biplot.princomp}}
+#'    with \code{pc.biplot = FALSE} ("default") and
+#'    \code{pc.biplot = TRUE} ("pc.biplot"). If NULL,
+#'    no processing is performed, assuming that data
+#'    within \code{ordination_object} was previously transformed.
+#' @param rows_over_columns Numeric, the value defining the
+#'    degree in which distances between observations have
+#'    priority over distances between variables
+#'    (0 = observation-focused, 1 = variable-focused).
+#'    It corresponds to the argument \code{scale} in
+#'    \code{\link[stats]{biplot.princomp}}. It will be
+#'    ignored if \code{biplot_type = NULL}. The default is
+#'    set at 0.5, which corresponds to a 'SQRT-Biplot',
+#'    a compromise between the two representations.
+#'
 #' @param groups A factor variable containing the group
 #'    assignation of each point.
 #' @param vips A list of logical (Boolean) vectors identifying
 #'    "Very Important Points" under different methods or criteria.
 #'
+#' @param detach_arrows Logical, wheter to display covariance arrows
+#'    a independent miniature plot, overlapping the main plot and
+#'    placed according to \code{arrow_fig}.
 #' @param show_axes Logical, wheter to display the axes.
 #' @param show_grid Logical, wheter to display the background grid.
 #' @param show_group_legend Logical, whether to display
@@ -48,8 +70,10 @@
 #'    (See  \code{\link[ade4]{s.class}}).
 #' @param x_title,y_title Character, texts to be placed in
 #'    the x and y axes.
-#' @param title_cex,title_font,title_adj The text parameters
-#'    of the axes titles (\code{\link[graphics]{par}}).
+#' @param x_title_cex,x_title_font The text parameters
+#'    of the x axis or horizontal title (\code{\link[graphics]{par}}).
+#' @param y_title_cex,y_title_font The text parameters
+#'    of the y axis or vertical title (\code{\link[graphics]{par}}).
 #' @param subtitle Character, a subtitle to be displayed
 #'    in the bottom-left corner of the plot
 #'    (\code{csub} in \code{\link[ade4]{s.class}}).
@@ -64,9 +88,9 @@
 #'    \code{\link[ade4]{s.class}}).
 #'
 #' @param point_type A character input accepting three
-#'    values: "point", the default \code{\link[rgl]{points3D}};
-#'    "label", displaying the content of \code{point_label};
-#'    and "point and label", placing both points and labels.
+#'    values: "point", "label" (displaying the content
+#'    of \code{point_label}) and "point and label", placing
+#'    both points and labels.
 #' @param point_pch A number or a numerical vector given
 #'    to \code{pch} in \code{\link[graphics]{par}}.
 #' @param point_size The size or scale given to \code{cpoint} in
@@ -87,7 +111,8 @@
 #'
 #' @param group_color A vector containing the colors to
 #'    be used in each group (applied to points, labels,
-#'    stars and ellipses).
+#'    stars and ellipses). If NULL, automatically assign
+#'    different colors from the \code{rainbow()} palette.
 #' @param group_star_cex,group_ellipse_cex,group_label_cex The
 #'    size or scale of the stars, ellipses, and labels
 #'    representing groups passed to \code{\link[ade4]{s.class}}
@@ -134,24 +159,29 @@
 #'    title (\code{\link[graphics]{par}}).
 #' @param vip_legend_box_color The background color of the
 #'    vips legend box.
-#' @param vip_legend_key_cex The sizing factor of the keys
+#' @param vip_legend_key_cex Numeric, the sizing factor of the keys
 #'    in the vips legend respect to the vips marking
 #'    in the plot.
-#' @param vip_legend_key_margin The x position of the keys
+#' @param vip_legend_key_margin Numeric, the x position of the keys
 #'    within the vips legend box. Values from 0 to 1.
 #' @param vip_legend_text_cex,vip_legend_text_font,vip_legend_text_adj The text parameters of the text entries in the vips legend.
-#' @param vip_legend_text_margin The x position of the
+#' @param vip_legend_text_margin Numeric, the x position of the
 #'    text entries in the vips legend box. Values from 0 to 1.
 #'
 #' @param arrow_color The color or colors to be used in
 #'    covariance arrows.
-#' @param arrow_mim_dist The minimum distance of a arrow
+#' @param arrow_mim_dist Numeric, the minimum distance of a arrow
 #'    from the origin of arrows (i.e. zero covariance),
 #'    in order for it to be displayed (range [0 = all arrows
 #'    are displayed,1 = no arrow is displayed]).
+#' @param arrow_length Numeric, the scalar factor applied to loadings
+#'    to resize them respect to scores. If \code{detach_arrows = TRUE},
+#'    resizing is controlled with \code{arrow_fig}, so  this value is ignored.
 #' @param arrow_cex,arrow_lwd,arrow_label_cex,arrow_label_color,arrow_label_font,arrow_label_adj
 #'    Graphical parameters of the covariance arrows and their
-#'    labels (\code{\link[graphics]{par}}).
+#'    labels (see \code{\link[graphics]{arrows}} and
+#'    \code{\link[graphics]{par}}). \code{arrow_cex} is actually
+#'    equivalent to \code{length} in \code{\link[graphics]{arrows}}.
 #' @param arrow_label_adj_override A data frame with x,y values
 #'    to be passed to \code{adj}, overrinding the default
 #'    value given in \code{arrow_label_adj}. The rows must
@@ -171,7 +201,10 @@
 #'    the text with the test results
 #'    (\code{\link[graphics]{par}}).
 #'
-#' @param main_fig,group_legend_fig,vip_legend_fig,fitAnalysis_fig,test_fig,x_title_fig,y_title_fig The
+#' @param fit_into_main Logical, wheter to fit all elements
+#'    into the main plot. If TRUE, the 'fig' parameter of
+#'    every element is interpreted as relative to \code{main_fig}.
+#' @param main_fig,group_legend_fig,vip_legend_fig,arrow_fig,fitAnalysis_fig,test_fig,x_title_fig,y_title_fig The
 #'    \code{fig} parameter (\code{\link[graphics]{par}})
 #'    to place in the display region of the graphics device,
 #'    respectively, the main plot, the group and vip legends,
@@ -182,6 +215,15 @@
 #'    output image types to be generated. Values accepted
 #'    are: "png", "tiff", "jpeg", "eps", and "preview"
 #'    (i.e. R graphics device).
+#' @param open_new_device Logical, wheter to build the plot in
+#'    a new graphics device. If FALSE, the biplot is
+#'    draw in the current device.
+#' @param leave_device_open Logical, wheter to leave the
+#'    graphics device open, e.g. to continue the plot
+#'    adding external elements. TRUE is only accepted if
+#'    \code{output_type} has a single value. If
+#'    \code{output_type = c("preview")}, the device is
+#'    left open by default.
 #' @param directory Character, the directory within the
 #'    working directory. For example, "MyFolder/".
 #' @param file_name Character, the name of the output file.
@@ -192,6 +234,20 @@
 #' @details This function allows customising virtually every
 #' graphical parameter in a 2D biplot, including several extra
 #' elements that may be useful for multivariate explorations.
+#' It is focused mainly on improving basic visualization aspects
+#' of ordination methods through 'classical' biplots. There
+#' are several packages that address the creation of other
+#' variations of biplot: BiplotGUI, GGEBiplotGUI, multibiplotGUI,
+#' biplotbootGUI, NominalLogisticBiplot, OrdinalLogisticBiplot,
+#' ade4, vegan, MultBiplotR.
+#' When \code{biplot_type = "default"}, the biplot processing
+#' is done as in \code{\link[stats]{biplot.princomp}}, which
+#' follows the definition of Gabriel (1971). As in this method,
+#' when \code{biplot_type = "pc.biplot"}, this function creates
+#' biplots according with Gabriel and Odoroff (1990). Since there
+#' are several types of biplot transformations,
+#' it is possible to use 'scores' and 'loadings' that were
+#' already transformed, passing \code{biplot_type = NULL}.
 #' Groups can be represented as stars, ellipsoids, and/or colors,
 #' using  (\code{\link[ade4]{s.class}}), which can be tracked by a
 #' fully-customisable legend (\code{group_legend} arguments).
@@ -226,16 +282,67 @@
 #' # Default plot using Species as the group factor
 #' biplot_2d(pca, groups = iris$Species)
 #'
+#' # Use the typical visualization,
+#' # placing scores and loadings around the same origin
+#' biplot_2d(pca, groups = iris$Species, detach_arrows = FALSE)
+#'
+#' # Compare different versions of the classical biplot
+#' # "default" vs. "pc.biplot"
+#' biplot_2d(pca,
+#'           output_type = "preview",
+#'           leave_device_open = TRUE,
+#'           x_title = 'biplot_type = "default"',
+#'           x_title_fig = c(0, 1, 0.9, 1),
+#'           fit_into_main = TRUE,
+#'           main_fig = c(0, 0.499, 0, 1))
+#' biplot_2d(pca,
+#'           output_type = "preview",
+#'           open_new_device = FALSE,
+#'           biplot_type = "pc.biplot",
+#'           x_title = 'biplot_type = "pc.biplot"',
+#'           x_title_fig = c(0, 1, 0.9, 1),
+#'           fit_into_main = TRUE,
+#'           main_fig = c(0.5099, 1, 0, 1))
+#'
+#' # varying focus on representing distances
+#' # between observations or between variables
+#' biplot_2d(pca,
+#' output_type = "png",
+#' leave_device_open = TRUE,
+#' rows_over_columns = 1,
+#' x_title = 'observation-focused\nrows_over_columns = 1',
+#' x_title_fig = c(0, 1, 0.9, 1),
+#' fit_into_main = TRUE,
+#' main_fig = c(0, 0.329, 0, 1),
+#' width = 1200)
+#' biplot_2d(pca,
+#'           open_new_device = FALSE,
+#'           leave_device_open = TRUE,
+#'           rows_over_columns = 0.5,
+#'           x_title = 'compromise\nrows_over_columns = 0.5',
+#'           x_title_fig = c(0, 1, 0.9, 1),
+#'           fit_into_main = TRUE,
+#'           main_fig = c(0.331, 0.659, 0, 1))
+#' biplot_2d(pca,
+#'           open_new_device = FALSE,
+#'           rows_over_columns = 0,
+#'           biplot_type = "pc.biplot",
+#'           x_title = 'variable-focused\nrows_over_columns = 0',
+#'           x_title_fig = c(0, 1, 0.9, 1),
+#'           fit_into_main = TRUE,
+#'           main_fig = c(0.661, 1, 0, 1))
+#'
 #' # ---------------------------------------------------------
-#' # Plot groups as different point types (pch),
-#' # make group label invisible and add a group
-#' # legend with a a custom title.
+#' # Plot groups as different colors and point types (pch),
+#' # make group star, ellipsis, and label invisible and
+#' # add a group legend with a a custom title.
 #' biplot_2d(pca,
 #'           groups = iris$Species,
+#'           group_color = NULL,
 #'           point_pch = c(1, 3, 2),
-#'           group_cstar = 0,
-#'           group_cellipse = 0,
-#'           group_clabel = 0,
+#'           group_star_cex = 0,
+#'           group_ellipse_cex = 0,
+#'           group_label_cex = 0,
 #'           show_group_legend = T,
 #'           group_legend_title = "Species")
 #'
@@ -255,9 +362,9 @@
 #' biplot_2d(pca,
 #'           groups = iris$Species,
 #'           point_pch = c(1, 3, 2),
-#'           group_cstar = 0,
-#'           group_cellipse = 0,
-#'           group_clabel = 0,
+#'           group_star_cex = 0,
+#'           group_ellipse_cex = 0,
+#'           group_label_cex = 0,
 #'           show_group_legend = T,
 #'           group_legend_title = "Species",
 #'           arrow_color = c("orange",
@@ -266,16 +373,6 @@
 #'                           "green"),
 #'           arrow_label_adj_override = arrow_label_adj_override,
 #'           show_grid = FALSE)
-#'
-#' # ---------------------------------------------------------
-#' # Plot observations using their names
-#' biplot_3d(pca, groups = iris$Species,
-#'           point_type = "label", point_label = row.names(iris),
-#'           star_label_alpha = 0,
-#'           show_group_legend = TRUE, group_legend_title = "",
-#'           arrow_center_pos = c(.5, 0, .5),
-#'           arrow_body_length = 2, arrow_body_width = 2,
-#'           show_axes = FALSE, view_zoom = 1)
 #'
 #' # ---------------------------------------------------------
 #' # Get arbitrary Very Important Points
@@ -288,14 +385,21 @@
 #'
 #' # Plot observations using their names and group by Species using only color.
 #' # Mark the VIP and add the respective legend with custom characters.
-#' # Rotate the theta view angle to fit the arrows in the default setting.
-#' biplot_3d(pca, groups = iris$Species,
-#'           point_type = "label", point_label = row.names(iris),
-#'           group_representation = NULL,
-#'           show_group_legend = TRUE, group_legend_title = "",
+#' biplot_2d(pca,
+#'           groups = iris$Species,
+#'           point_type = "label",
+#'           point_label = row.names(iris),
+#'           group_color = c("red", "blue", "green"),
+#'           group_star_cex = 0,
+#'           group_ellipse_cex = 0,
+#'           group_label_cex = 0,
+#'           show_group_legend = TRUE,
+#'           group_legend_title = "",
 #'           vips = irisVIP,
-#'           vip_pch = c("X", "O", "+"), vip_cex = c(2, 2, 3),
-#'           show_axes = FALSE, view_theta = 340)
+#'           vip_pch = c("X", "O", "+"),
+#'           vip_cex = c(2, 2, 3),
+#'           vip_legend_fig = c(0.01, 0.25, 0.7, 0.99),
+#'           show_axes = FALSE)
 #'
 #' # ---------------------------------------------------------
 #' # Test the setosa separation
@@ -308,7 +412,7 @@
 #' irisTests$permdisp2 <- permutest(betadisper(irisDist,setosaSeparation),
 #'                                  pairwise = TRUE)
 #' # This function prepares a list of character vectors containing the test results
-#' resultText <- function(tests){
+#' getTestText <- function(tests){
 #'   permanova_F <- as.character(round(tests$permanova$aov.tab$F.Model[1], 3))
 #'   permanova_pvalue <- as.character(round(tests$permanova$aov.tab$"Pr(>F)"[1], 3))
 #'   permanova_rSquared <- as.character(round(tests$permanova$aov.tab$R2[1], 3))
@@ -323,33 +427,32 @@
 #'   return(text)
 #' }
 #'
-#' # Plot observations using points and groups as stars with no labels.
-#' # Place tests results in the bottom left corner and give a custom title.
-#' biplot_3d(pca, groups = iris$Species,
-#'           point_type = "point", star_label_alpha = 0,
-#'           show_group_legend = TRUE, group_legend_title = "",
-#'           show_test = TRUE, test_text = resultText(irisTests),
-#'           test_fig = c(0.01,0.5,0.07,0.37),
-#'           show_axes = FALSE, view_theta = 340,
-#'           title = "testing setosa separation")
-#'
-#' # Draw a segment between setosa and the other species centroids
-#' x <- c(mean(pca$scores[iris$Species=="setosa", 1]),
-#'        mean(pca$scores[iris$Species!="setosa", 1]))
-#' y <- c(mean(pca$scores[iris$Species=="setosa", 2]),
-#'        mean(pca$scores[iris$Species!="setosa", 2]))
-#' z <- c(mean(pca$scores[iris$Species=="setosa", 3]),
-#'        mean(pca$scores[iris$Species!="setosa", 3]))
-#' lines3d(x, y, z, color = "purple", lwd = 5)
+#' # Plot observations using points and groups as colored stars with no labels.
+#' # Place tests results in the top left corner and give a custom horizontal title.
+#' biplot_2d(pca,
+#'           groups = iris$Species,
+#'           group_color = NULL,
+#'           group_ellipse_cex = 0,
+#'           group_label_cex = 0,
+#'           show_group_legend = TRUE,
+#'           group_legend_title = "",
+#'           test_text = resultText(irisTests),
+#'           test_fig = c(0.01,0.5,0.6,0.95),
+#'           show_axes = FALSE,
+#'           x_title = "testing setosa separation",
+#'           x_title_cex = 1.5)
 #'
 #'}
 #'
 biplot_2d <-
   function(ordination_object,
            ordination_method = "PCA",
+           biplot_type = "default",
+           rows_over_columns = 0.5,
            groups = NULL,
            vips = NULL,
 
+           detach_arrows = TRUE,
            show_grid = TRUE,
            show_axes = TRUE,
            show_group_legend = FALSE,
@@ -365,9 +468,10 @@ biplot_2d <-
            ylim = NULL,
            x_title = "",
            y_title = "",
-           title_cex = 1,
-           title_font = 2,
-           title_adj = 0.5,
+           x_title_cex = 1,
+           x_title_font = 2,
+           y_title_cex = 1,
+           y_title_font = 2,
            subtitle = NULL,
            subtitle_position = "bottomleft",
            subtitle_cex = 1,
@@ -378,7 +482,7 @@ biplot_2d <-
            point_label = NULL,
            point_label_cex = 1,
            point_label_font = 3,
-           point_label_adj = c(.5, .5),
+           point_label_adj = c(0.5, 0.5),
            point_label_adj_override = NULL,
 
            group_color = "black",
@@ -410,25 +514,26 @@ biplot_2d <-
            vip_adj = c(0.5, 0.5),
            vip_legend_title = "VIPs",
            vip_legend_title_pos = c(0.5, 0.85),
-           vip_legend_title_cex = 2,
+           vip_legend_title_cex = 1,
            vip_legend_title_font = 3,
            vip_legend_title_adj = 0.5,
            vip_legend_box_color = "white",
            vip_legend_key_cex = 0.8,
            vip_legend_key_margin = 0.15,
-           vip_legend_text_cex = 2,
+           vip_legend_text_cex = 1,
            vip_legend_text_font = 1,
            vip_legend_text_adj = 0,
            vip_legend_text_margin = 0.25,
 
            arrow_color = "darkorange",
            arrow_mim_dist = 0,
-           arrow_cex = .1,
+           arrow_length = 0.2,
+           arrow_cex = 0.1,
            arrow_lwd = 2,
            arrow_label_cex = 1,
            arrow_label_color = "black",
            arrow_label_font = 1,
-           arrow_label_adj = c(.5, .5),
+           arrow_label_adj = c(0.5, 0.5),
            arrow_label_adj_override = NULL,
 
            fitAnalysis_cex = 1,
@@ -442,27 +547,25 @@ biplot_2d <-
            test_font = 1,
            test_adj = 0.5,
 
+           fit_into_main = FALSE,
            main_fig =          c(   0,    1,      0,     1),
            group_legend_fig = c( 0.8,  0.99,   0.6,  0.90),
            vip_legend_fig =   c(0.78,  0.99,   0.3,  0.55),
            arrow_fig =        c(0.69,  0.99,  0.01,  0.31),
            fitAnalysis_fig =  c(0.02,  0.35,  0.06,  0.25),
            test_fig =         c(   0,   0.3,   0.8,     1),
-
            x_title_fig =      c(0.25,     1,  0.85,     1),
            y_title_fig =      c(0.91,     1,     0,     1),
 
            output_type = c("preview","png"),
+           open_new_device = TRUE,
+           leave_device_open = FALSE,
            directory = "",
            file_name = "2D Biplot",
            width = 400,
            height = 400,
            family = "sans"
            ) {
-
-    #require(ade4)
-    #library(extrafont)
-    #NOTE: biplots2d3d::filter_arrows
 
     # Load data ===================================================
     scores <- NULL
@@ -490,6 +593,34 @@ biplot_2d <-
         scores <- ordination_object$x
         loadings <- ordination_object$rotation
         sdev <- ordination_object$sdev
+
+      }
+
+      isPCbiplot <- FALSE
+
+      if (biplot_type == "pc.biplot") isPCbiplot <- TRUE
+
+      lambda <- get_lambda(sdev,
+                           n.obs = nrow(scores),
+                           dimensions = 1:2,
+                           scale = rows_over_columns,
+                           pc.biplot = isPCbiplot)
+
+      if (biplot_type == "default" || biplot_type == "pc.biplot") {
+
+        scores <- t(t(scores)/lambda)
+        loadings <- t(t(loadings) * lambda)
+
+      } else {
+
+        if (!is.null(biplot_type)) {
+
+          stop("The biplot_type given is not supported.
+               Choose between 'default' and 'pc.biplot'
+               or NULL, if data was previously transformed.",
+               call. = FALSE)
+
+        }
 
       }
 
@@ -569,6 +700,27 @@ biplot_2d <-
 
     # Set up parameters ===========================================
 
+    # scale 'fig' parameters, if fit_into_main = TRUE
+    group_legend_fig_ <- group_legend_fig
+    vip_legend_fig_ <- vip_legend_fig
+    arrow_fig_ <- arrow_fig
+    fitAnalysis_fig_ <- fitAnalysis_fig
+    test_fig_ <- test_fig
+    x_title_fig_ <- x_title_fig
+    y_title_fig_ <- y_title_fig
+
+    if (fit_into_main) {
+
+      group_legend_fig_ <- scale_to_main(group_legend_fig, main_fig)
+      vip_legend_fig_ <- scale_to_main(vip_legend_fig, main_fig)
+      arrow_fig_ <- scale_to_main(arrow_fig, main_fig)
+      fitAnalysis_fig_ <- scale_to_main(fitAnalysis_fig, main_fig)
+      test_fig_ <- scale_to_main(test_fig, main_fig)
+      x_title_fig_ <- scale_to_main(x_title_fig, main_fig)
+      y_title_fig_ <- scale_to_main(y_title_fig, main_fig)
+
+    }
+
     # Load subtitle -----------------------------------------------
 
     sub <- subtitle
@@ -644,19 +796,27 @@ biplot_2d <-
 
     } else {
 
-      if (length(group_color) < nlevels(groups_)) {
+      # if group_color is not specified, get diferent colors for each group
+      if (is.null(group_color)) {
 
-        if (length(group_color) == 1) {
+        group_color_ <- rainbow(nlevels((groups_)))
 
-          group_color_ <- rep(group_color, nlevels(groups_))
+      } else {
 
-        } else {
+        if (length(group_color) < nlevels(groups_)) {
 
-          stop("length(group_color) < nlevels(groups).
+          if (length(group_color) == 1) {
+
+            group_color_ <- rep(group_color, nlevels(groups_))
+
+          } else {
+
+            stop("length(group_color) < nlevels(groups).
                Please specify colors for all groups or
                choose a single color.",
-               call. = FALSE)
+                 call. = FALSE)
 
+          }
         }
       }
     }
@@ -756,6 +916,8 @@ biplot_2d <-
       # Get variation range of loadings at the first component
       # The one with most variation
       loadingsRange <- max(loadings[, 1]) - min(loadings[, 1])
+      # apply scalling
+      loadingsRange <- loadingsRange * arrow_length
 
       # color of arrows
       arrow_label_color_ <- arrow_color
@@ -773,49 +935,75 @@ biplot_2d <-
 
     for (out in output_type){
 
-      # Set directory + file name
-      if (directory == "") {
-        fn <- paste(file_name,
-                    out,
-                    sep = ".")
-      } else {
-        fn <- paste(directory,
-                    paste(file_name,
-                          out,
-                          sep = "."),
-                    sep = "/")
-      }
+      # save current graphic configuration
+      current_par <- par(no.readonly = TRUE)
 
-      # Open graphics device
-      if(out == "png"){
-        grDevices::png(filename = fn,
-                       width = width,
-                       height = height)
-      }
-      if(out == "eps"){
-        loadfonts(device = "postscript")
-        grDevices::postscript(file = fn,
-                              pointsize = 10,
-                              width = width / 100,
-                              height = height / 100,
-                              horizontal = FALSE,
-                              paper = "special",
-                              family = family,
-                              colormodel = "cmyk")
-      }
-      if(out == "tiff"){
-        grDevices::tiff(filename = fn,
-                        width = width,
-                        height = height)
-      }
-      if(out == "jpeg"){
-        grDevices::jpeg(filename = fn,
-                        width = width,
-                        height = height)
+      if (open_new_device) {
+
+        # Set directory + file name
+        if (directory == "") {
+          fn <- paste(file_name,
+                      out,
+                      sep = ".")
+        } else {
+          fn <- paste(directory,
+                      paste(file_name,
+                            out,
+                            sep = "."),
+                      sep = "/")
+        }
+
+        # Open graphics device
+        if (out == "png") {
+          grDevices::png(filename = fn,
+                         width = width,
+                         height = height)
+        } else
+          if (out == "eps") {
+          extrafont::loadfonts(device = "postscript")
+          grDevices::postscript(file = fn,
+                                pointsize = 10,
+                                width = width / 100,
+                                height = height / 100,
+                                horizontal = FALSE,
+                                paper = "special",
+                                family = family,
+                                colormodel = "cmyk")
+        } else
+          if (out == "tiff") {
+          grDevices::tiff(filename = fn,
+                          width = width,
+                          height = height)
+        } else
+          if (out == "jpeg") {
+          grDevices::jpeg(filename = fn,
+                          width = width,
+                          height = height)
+        } else
+          if (out == "preview") {
+
+        } else {
+          stop("The output type is not supported.
+               \nThe accepted are: 'png', 'eps', 'tiff', 'jpeg', or 'preview'.",
+               call. = FALSE)
+        }
+      } else {
+        if (!is.null(dev.list())) {
+
+          par(new = TRUE)
+
+        } else {
+
+          stop("There is no graphics device currently open,
+               so 'open_new_device = FALSE'.",
+               call. = FALSE)
+
+        }
       }
 
       # Set up general background graphic parameters
-      par(font = grid_font,
+      par(mar = c(0, 0, 0, 0),
+          font = grid_font,
           family = family,
           adj = grid_adj,
           fig = main_fig)
@@ -883,7 +1071,7 @@ biplot_2d <-
           # Plot vip markings
           points(scores[vips[[i]], 1],
                  scores[vips[[i]], 2],
-                 color = vip_color_,
+                 col = vip_color_,
                  pch = vip_pch_,
                  cex = vip_cex_,
                  lwd = vip_lwd_,
@@ -915,6 +1103,67 @@ biplot_2d <-
         }
       }
 
+      # insert the miniature of variables covariances (arrows) ----
+      if (show_arrows) {
+
+        # copy of loadings to which scalling may be applied
+        arrow_x <- loadings[, 1] * arrow_length
+        arrow_y <- loadings[, 2] * arrow_length
+
+        if (detach_arrows) {
+
+          # back to original graphics configuration
+          par(current_par)
+
+          par(fig = arrow_fig_,
+              new = T ,
+              mar = c(0.1, 0.1, 0.1, 0.1),
+              lwd = arrow_lwd)
+
+          # Initialize plot
+          plot(arrow_x,
+               arrow_y,
+               pch = "",
+               axes = FALSE,
+               xaxt = 'n',
+               yaxt = 'n',
+               ann = FALSE,
+               xlim = c(min(arrow_x) - 0.05 * loadingsRange,
+                        max(arrow_x) + 0.05 * loadingsRange),
+               ylim = c(min(arrow_y) - 0.05 * loadingsRange,
+                        max(arrow_y) + 0.05 * loadingsRange))
+
+        } else {
+
+          par(lwd = arrow_lwd)
+
+        }
+
+        # Draw arrows
+        arrows(0,
+               0,
+               arrow_x,
+               arrow_y,
+               length = arrow_cex,
+               col = arrow_color)
+
+        # Draw arrows labels
+        for (i in 1:nrow(loadings)){
+
+          text(arrow_x[i],
+               arrow_y[i],
+               labels = row.names(loadings)[i],
+               col = arrow_label_color_,
+               cex = arrow_label_cex,
+               font = arrow_label_font,
+               adj = arrow_label_adj_[i, ],
+               family = family)
+        }
+
+        # back to original graphics configuration
+        par(current_par)
+      }
+
       # Create the legend for groups ------------------------------
       # (color,pch -> groups)
 
@@ -927,7 +1176,7 @@ biplot_2d <-
         }
 
         # Create the legend for the factor (color -> groups)
-        par(fig = group_legend_fig,
+        par(fig = group_legend_fig_,
             new = T,
             mar = c(0, 0, 0, 0))
 
@@ -954,7 +1203,7 @@ biplot_2d <-
           # select the shape of the key
           group_legend_key_pch_ <- group_legend_key_pch
           # In case that groups are differentiated by pch
-          if (length(point_pch_) > 1) {
+          if (length(point_pch) > 1) {
             group_legend_key_pch_ <- point_pch[i]
           }
 
@@ -992,6 +1241,9 @@ biplot_2d <-
                adj = group_legend_text_adj)
 
         }
+
+        # back to original graphics configuration
+        par(current_par)
       }
 
       # Create the legend for the vips ----------------------------
@@ -1001,7 +1253,7 @@ biplot_2d <-
         firstLine <- 1
         if (is.null(vip_legend_title)) firstLine <- 0
 
-        par(fig = vip_legend_fig,
+        par(fig = vip_legend_fig_,
             new = T,
             mar = c(0, 0, 0, 0))
 
@@ -1064,6 +1316,9 @@ biplot_2d <-
                adj = vip_legend_text_adj)
 
         }
+
+        # back to original graphics configuration
+        par(current_par)
       }
 
       # insert the plot corresponding to the fit analysis ---------
@@ -1074,11 +1329,11 @@ biplot_2d <-
         if (ordination_method == "NMDS") {
 
           # for the NMDS, the stress plot is shown
-          par(fig = fitAnalysis_fig,
+          par(fig = fitAnalysis_fig_,
               new = T,
               mar = c(5, 5, 1, 1))
 
-          stressplot(ordination_object,
+          vegan::stressplot(ordination_object,
                      p.col = fitAnalysis_stress_p_color,
                      cex = fitAnalysis_cex,
                      cex.lab = fitAnalysis_cex,
@@ -1089,7 +1344,7 @@ biplot_2d <-
         } else {
 
           # for PCA and PCoA, the Screeplot is shown
-          par(fig = fitAnalysis_fig,
+          par(fig = fitAnalysis_fig_,
               new = T ,
               mar = c(0.1, 0.1, 1, 0.1),
               lwd = fitAnalysis_lwd)
@@ -1111,56 +1366,16 @@ biplot_2d <-
                   add = TRUE)
 
         }
-      }
 
-      # insert the miniature of variables covariances (arrows) ----
-      if (show_arrows) {
-
-        par(fig = arrow_fig,
-            new = T ,
-            mar = c(0.1, 0.1, 0.1, 0.1),
-            lwd = arrow_lwd)
-
-        # Initialize plot
-        plot(loadings[, 1],
-             loadings[, 2],
-             pch = "",
-             axes = FALSE,
-             xaxt = 'n',
-             yaxt = 'n',
-             ann = FALSE,
-             xlim = c(min(loadings[, 1]) - 0.05 * loadingsRange,
-                      max(loadings[, 1]) + 0.05 * loadingsRange),
-             ylim = c(min(loadings[, 2]) - 0.05 * loadingsRange,
-                      max(loadings[, 2]) + 0.05 * loadingsRange))
-
-        # Draw arrows
-        arrows(0,
-               0,
-               loadings[, 1],
-               loadings[, 2],
-               length = arrow_cex,
-               col = arrow_color)
-
-        # Draw arrows labels
-        for (i in 1:nrow(loadings)){
-
-          text(loadings[i, 1],
-               loadings[i, 2],
-               labels = row.names(loadings)[i],
-               col = arrow_label_color_,
-               cex = arrow_label_cex,
-               font = arrow_label_font,
-               adj = arrow_label_adj_[i, ],
-               family = family)
-        }
+        # back to original graphics configuration
+        par(current_par)
       }
 
       # Display tests results -------------------------------------
 
       if (!is.null(test_text)) {
 
-        par(fig = test_fig,
+        par(fig = test_fig_,
             new = T,
             mar = c(0, 0, 0, 0))
 
@@ -1179,47 +1394,51 @@ biplot_2d <-
                pos = 4,
                family = family)
         }
+
+        # back to original graphics configuration
+        par(current_par)
       }
 
       # Display horizontal (x) and vertical (y) titles ------------
 
-      par(fig = x_title_fig,
+      par(fig = x_title_fig_,
           new = T,
           mar = c(0, 0, 0, 0))
 
       plot.new()
 
-      text(0.1,
-           0.7,
+      text(0,
+           0.5,
            labels = x_title,
-           cex = title_cex,
-           font = title_font,
-           adj = title_adj,
+           cex = x_title_cex,
+           font = x_title_font,
            pos = 4,
            family = family)
 
-      par(fig = c(0, 1, 0, 1))
+      #par(fig = c(0, 1, 0, 1))
 
-      par(fig = y_title_fig,
+      par(fig = y_title_fig_,
           new = T,
           mar = c(0, 0, 0, 0))
 
       plot.new()
 
-      text(0.1,
-           0.7,
+      text(0,
+           0.5,
            labels = y_title,
-           cex = title_cex,
-           font = title_font,
-           adj = title_adj,
+           cex = y_title_cex,
+           font = y_title_font,
            pos = 3,
            srt = 90,
            family = family)
 
-      par(fig = c(0, 1, 0, 1))
+      #par(fig = c(0, 1, 0, 1))
+
+      # back to original graphics configuration
+      par(current_par)
 
       # Close graphics device if not in preview mode ==============
-      if (out != "preview") dev.off()
+      if (out != "preview" && !leave_device_open) dev.off()
 
     }
   }

@@ -4,12 +4,12 @@
 \alias{get_colors}
 \title{Get colors for the different levels of a factor variable}
 \usage{
-get_colors(groups, group_col = palette())
+get_colors(groups, color_palette = palette())
 }
 \arguments{
 \item{groups}{A factor variable containing the group of each observation.}
 
-\item{colors}{The default colors to be used.}
+\item{color_palette}{The palette or vector of colors to be used.}
 }
 \value{
 Return a vector of colors matching the levels of groups.

@@ -2,46 +2,57 @@
 % Please edit documentation in R/rgl_group_representation.R
 \name{ellipsoids3d}
 \alias{ellipsoids3d}
-\title{Draw an labeled custom ellipsoid}
+\title{Draw ellipsoids per group}
 \usage{
-ellipsoids3d(x, y, z, color = "black", type = "wire and shade",
-  level = 0.95, label = "", wire_color = NULL, wire_alpha = 0.2,
+ellipsoids3d(x, y, z, groups, group_color = rainbow(nlevels((groups))),
+  type = "wire and shade", level = 0.95, singleton_color = NULL,
+  singleton_radius = 0.1, wire_color = NULL, wire_alpha = 0.2,
   wire_lit = FALSE, shade_color = NULL, shade_alpha = 0.1,
-  shade_lit = FALSE, label_color = NULL, label_cex = 2,
+  shade_lit = FALSE, label_color = NULL, label_cex = 1,
   label_family = "sans", label_font = 2, label_adj = c(-0.25, 0.5),
   label_alpha = 1)
 }
 \arguments{
 \item{x, y, z}{Numeric vectors representing point coordinates.}
 
-\item{color}{The default color to be used in all elements.}
+\item{groups}{A factor vector of length \code{length(x)} containing
+the group assignation of each point.}
 
-\item{type}{Character, representing the type of ellipsoid filling: "wire",
+\item{group_color}{A vector of length \code{nlevels(groups)} containing the
+colors to be used in each group.}
+
+\item{type}{a character representing the type of ellipsoid filling: "wire",
 "shade" or "wire and shade" (\code{\link[rgl]{wire3d}},
 \code{\link[rgl]{shade3d}}).}
 
-\item{level}{Numeric, the confidence level of a simultaneous confidence
-region
+\item{level}{the confidence level of a simultaneous confidence region
 (\code{\link[rgl]{ellipse3d}}).}
 
-\item{label}{Character, The ellipsoid label.}
+\item{singleton_color, wire_color, shade_color, label_color}{The
+specific colors to be used in each ellipsoid's elements for each group.
+If not NULL, they override the \code{colors} argument.}
 
-\item{wire_color, shade_color, label_color}{The specific colors to be used
-in the ellipsoid's elements. If not NULL, they override the
-\code{color} argument.}
+\item{singleton_radius}{the radius of the spheres
+(\code{\link[rgl]{spheres3d}}) used to represent points of groups with
+three or less points.}
 
-\item{wire_alpha, wire_lit}{Numeric, the wire alpha and lit parameters
+\item{wire_alpha, wire_lit}{the wire alpha and lit parameters
 (\code{\link[rgl]{rgl.material}}).}
 
-\item{shade_alpha, shade_lit}{Numeric, the shade alpha and lit parameters
+\item{shade_alpha, shade_lit}{the shade alpha and lit parameters
 (\code{\link[rgl]{rgl.material}}).}
 
-\item{label_cex, label_family, label_font, label_adj, label_alpha}{The group
+\item{label_cex, label_family, label_font, label_adj, label_alpha}{the group
 labels text parameters (\code{\link[rgl]{text3d}},
-\code{\link[rgl]{rgl.material}}).}
+\code{\link[rgl]{rgl.material}}). \code{label_adj} accepts a single
+numeric value (horizontal), a numeric vector of length two
+(horizontal, vertical) or a list of length \code{nlevels(groups)}
+containing the adj values for the specific groups.}
 }
 \description{
-Compute and draw a labeled ellipsoid in a rgl device.
+Compute and draw a labeled ellipsoid for each group in a rgl device.
+Singleton or groups with less than four observations are drawn as
+individual spheres.
 }
 \examples{
 
@@ -50,32 +61,44 @@ Compute and draw a labeled ellipsoid in a rgl device.
 # Use iris data
 data("iris")
 
-# get setosa
-setosa <- iris[iris$Species == "setosa",]
+# introduce fictional singleton species
+modIris <- iris
+modIris$Species <- as.character(modIris$Species)
+modIris <- rbind(modIris, list(6, 1, 2, 3, "outlier"))
+modIris$Species <- factor(modIris$Species)
 
 # Initializes the rgl device
-rgl_init(zoom = 0.75)
+rgl_init(theta = 60, phi = 45)
 
 # add axes and bounding box
-rgl_format(setosa$Sepal.Length, setosa$Sepal.Width, setosa$Petal.Length,
-           axes_titles = c("Sepal length", "Sepal width", "Petal length"))
+rgl_format(modIris$Sepal.Length, modIris$Sepal.Width, modIris$Petal.Length,
+           axes_titles = c("Sepal length", "Sepal width", "Petal length"),
+           show_planes = c("XZ", "XY", "YZ"))
 
 # Add data points
-points3d(setosa[, 1], setosa[, 2], setosa[, 3], color = "black")
+points3d(modIris[modIris$Species == "setosa", 1],
+         modIris[modIris$Species == "setosa", 2],
+         modIris[modIris$Species == "setosa", 3],
+         color = "green")
+points3d(modIris[modIris$Species == "versicolor", 1],
+         modIris[modIris$Species == "versicolor", 2],
+         modIris[modIris$Species == "versicolor", 3],
+         color = "red")
+points3d(modIris[modIris$Species == "virginica", 1],
+         modIris[modIris$Species == "virginica", 2],
+         modIris[modIris$Species == "virginica", 3],
+         color = "blue")
 
-# Add ellipsoid
-ellipsoids3d(setosa[, 1], setosa[, 2], setosa[, 3], label = "setosa",
-             wire_color = "green", shade_color = "red",
-             label_color = "blue", label_adj = c(-1, 0.5))
+# Add ellipsoids
+ellipsoids3d(modIris[, 1], modIris[, 2], modIris[, 3],
+             groups = modIris$Species,
+             group_color = c("purple", "green", "red", "blue"))
 
-remove(setosa)
-
+remove(modIris)
 }
 
 }
 \seealso{
-\code{\link{ellipsoids3d_group}}, \code{\link{rgl_init}},
-   \code{\link[rgl]{ellipse3d}}, \code{\link[rgl]{wire3d}},
-   \code{\link[rgl]{shade3d}}, \code{\link[rgl]{texts3d}}
+\code{\link{ellipsoid3d}}, \code{\link[rgl]{spheres3d}}
 }
 

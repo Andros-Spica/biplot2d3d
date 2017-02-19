@@ -4,7 +4,8 @@
 \alias{biplot_3d}
 \title{3D biplot}
 \usage{
-biplot_3d(ordination_object, ordination_method = "PCA", groups = NULL,
+biplot_3d(ordination_object, ordination_method = "PCA",
+  biplot_type = "default", rows_over_columns = 0.5, groups = NULL,
   vips = NULL, show_group_legend = FALSE, show_vip_legend = TRUE,
   show_arrows = TRUE, show_fitAnalysis = TRUE, show_axes = c("X", "Y",
   "Z"), show_planes = NULL, show_bbox = FALSE,
@@ -23,20 +24,21 @@ biplot_3d(ordination_object, ordination_method = "PCA", groups = NULL,
   bbox_marklen_rel = TRUE, bbox_expand = 1, bbox_draw_front = FALSE,
   title = "", title_color = "black", title_line = -2, title_size = 3,
   title_font = 20, title_adj = 0.5, subtitle = NULL,
-  subtitle_color = "black", subtitle_pos = c(0.03, 0.005),
-  subtitle_side = 1, subtitle_line = 3, subtitle_cex = 2,
-  subtitle_font = 2, subtitle_adj = 0, point_type = "point",
-  point_label = NULL, point_size = 5, point_alpha = 1,
-  point_label_cex = 0.8, point_label_font = 3, point_label_adj = c(0.5,
-  0.5), point_label_alpha = 1, group_color = NULL,
-  group_representation = NULL, ellipsoid_type = "wire and shade",
-  ellipsoid_level = 0.95, ellipsoid_wire_alpha = 0.2,
-  ellipsoid_wire_lit = FALSE, ellipsoid_shade_alpha = 0.1,
-  ellipsoid_shade_lit = FALSE, ellipsoid_label_cex = 1,
-  ellipsoid_label_font = 2, ellipsoid_label_adj = c(-0.25, 0.5),
-  ellipsoid_label_alpha = 1, star_centroid_radius = 0.005,
-  star_centroid_alpha = 0.5, star_link_width = 1, star_link_alpha = 1,
-  star_label_cex = 1, star_label_font = 2, star_label_adj = c(-0.25, 0.5),
+  subtitle_color = "black", subtitle_position = c(0.03, 0.005),
+  subtitle_cex = 2, subtitle_font = 2, subtitle_adj = 0,
+  point_type = "point", point_label = NULL, point_size = 5,
+  point_alpha = 1, point_label_cex = 0.8, point_label_font = 3,
+  point_label_adj = c(0.5, 0.5), point_label_alpha = 1,
+  group_color = NULL, group_representation = NULL,
+  ellipsoid_type = "wire and shade", ellipsoid_level = 0.95,
+  ellipsoid_singleton_color = NULL, ellipsoid_singleton_radius = 0.1,
+  ellipsoid_wire_alpha = 0.2, ellipsoid_wire_lit = FALSE,
+  ellipsoid_shade_alpha = 0.1, ellipsoid_shade_lit = FALSE,
+  ellipsoid_label_cex = 1, ellipsoid_label_font = 2,
+  ellipsoid_label_adj = c(-0.25, 0.5), ellipsoid_label_alpha = 1,
+  star_centroid_radius = 0.005, star_centroid_alpha = 0.5,
+  star_link_width = 1, star_link_alpha = 1, star_label_cex = 1,
+  star_label_font = 2, star_label_adj = c(-0.25, 0.5),
   star_label_alpha = 1, group_legend_title = "Groups",
   group_legend_title_pos = c(0.5, 0.85), group_legend_title_cex = 2,
   group_legend_title_font = 3, group_legend_title_adj = 0.5,
@@ -55,8 +57,8 @@ biplot_3d(ordination_object, ordination_method = "PCA", groups = NULL,
   vip_legend_text_cex = 1, vip_legend_text_font = 1,
   vip_legend_text_adj = 0, arrow_color = "darkorange", arrow_mim_dist = 0,
   arrow_center_pos = c(1, 0, 1), arrow_head_shape_theta = pi/6,
-  arrow_head_shape_n = 3, arrow_head_size = 0.1, arrow_body_length = 1,
-  arrow_body_width = 1, arrow_label_colors = "black",
+  arrow_head_shape_n = 3, arrow_head_size = 0.1, arrow_body_length = 0.2,
+  arrow_body_width = 1, arrow_label_color = "black",
   arrow_label_cex = 0.8, arrow_label_font = 2, arrow_label_adj = 0.5,
   arrow_label_alpha = 1, fitAnalysis_cex = 3, fitAnalysis_lwd = 3,
   fitAnalysis_screePlot_color = "white",
@@ -86,6 +88,23 @@ that was used to generate the ordination object:
 "PCoA" for Principal Coordinates Analysis,
 "NMDS" for Non-metric Multidimensional Scaling, and
 "LDA" for Linear Discriminant Analysis.}
+
+\item{biplot_type}{Character, indicating the type of
+biplot scalling of data: "default" and
+"pc.biplot", corresponding to the transformations
+performed in \code{\link[stats]{biplot.princomp}}
+with \code{pc.biplot = FALSE} ("default") and
+\code{pc.biplot = TRUE} ("pc.biplot"). If NULL,
+no processing is performed, assuming that data
+within \code{ordination_object} was previously prepared.}
+
+\item{rows_over_columns}{Numeric, the value defining the
+degree in which distances between observations have
+priority over distances between variables
+(0 = variable-focused, 1 = observation-focused).
+It corresponds to the argument \code{scale} in
+\code{\link[stats]{biplot.princomp}}. It will be
+ignored if \code{biplot_type = NULL}.}
 
 \item{groups}{A factor variable containing the group
 assignation of each point.}
@@ -124,13 +143,14 @@ and create axes.}
 \item{planes_colors, planes_textures, planes_alpha, planes_lit, planes_shininess}{The arguments passed to \code{\link{rgl_format}}
 to create dimensional planes.}
 
-\item{bbox_color, bbox_alpha, bbox_shininess, bbox_xat, bbox_xlab, bbox_xunit, bbox_xlen, bbox_yat, bbox_ylab, bbox_yunit, bbox_ylen, bbox_zat, bbox_zlab, bbox_zunit, bbox_zlen, bbox_marklen, bbox_expand, bbox_draw_front}{The arguments passed to
+\item{bbox_color, bbox_alpha, bbox_shininess, bbox_xat, bbox_xlab, bbox_xunit, bbox_xlen, bbox_yat, bbox_ylab, bbox_yunit, bbox_ylen, bbox_zat, bbox_zlab, bbox_zunit, bbox_zlen, bbox_marklen, bbox_marklen_rel, bbox_expand, bbox_draw_front}{The arguments passed to
 \code{\link{rgl_format}} to create a bounding box.}
 
 \item{title}{Character, title to be placed in the
 fixed 2D canvas ('main' in \code{\link[graphics]{title}}).}
 
-\item{title_line, title_color, title_size, title_font, title_adj}{the line, color, size, font, and justification of the
+\item{title_line, title_color, title_size, title_font, title_adj}{the line,
+color, size, font, and justification of the
 title (\code{line}, \code{col.main}, \code{cex.main},
 \code{font.main}, and \code{adj} in
 \code{\link[graphics]{title}}, \code{\link[graphics]{par}}).}
@@ -138,13 +158,17 @@ title (\code{line}, \code{col.main}, \code{cex.main},
 \item{subtitle}{Character, subtitle to be placed in
 the fixed 2D canvas ('main' in \code{\link[graphics]{text}}).}
 
-\item{subtitle_side, subtitle_line, subtitle_color, subtitle_cex, subtitle_font, subtitle_adj}{the position, color, size, font,
-and justification of the subtitle ('side', 'line',
-'col', 'cex', font and adj in \code{\link[graphics]{mtext}},
+\item{subtitle_color, subtitle_cex, subtitle_font, subtitle_adj}{the color, size, font,
+and justification of the subtitle ('col', 'cex',
+font and adj in \code{\link[graphics]{text}},
 \code{\link[graphics]{par}}).}
 
+\item{subtitle_position}{Numeric verctor of length two indicating the
+position of the subtitle in the fixed 2D canvas ('main'
+in \code{\link[graphics]{text}}).}
+
 \item{point_type}{Character, accepting three values: "point",
-the default \code{\link[rgl]{points3D}}; "label",
+the default \code{\link[rgl]{points3d}}; "label",
 displaying the content of \code{point_label}; and
 "point and label", placing both points and labels.}
 
@@ -155,6 +179,9 @@ of rows in the points/scores of the ordination object.
 length(point_label)}).}
 
 \item{point_size}{The size or scale given to \code{size}
+in \code{\link[rgl]{points3d}}}
+
+\item{point_alpha}{The alpha of points given to \code{alpha}
 in \code{\link[rgl]{points3d}}}
 
 \item{point_label_cex, point_label_font, point_label_adj, point_label_alpha}{The text parameters and the alpha of the arrows' labels.
@@ -169,11 +196,11 @@ representation to draw: "stars", "ellipsoids", or
 "stars and ellipsoids". Neither stars or ellipsoids
 are drawn, if NULL is given instead.}
 
-\item{ellipsoid_type, ellipsoid_level, ellipsoid_singleton_radius, ellipsoid_wire_alpha, ellipsoid_wire_lit, ellipsoid_shade_alpha, ellipsoid_shade_lit, ellipsoid_label_cex, ellipsoid_label_font, ellipsoid_label_adj, ellipsoid_label_alpha}{When ellipsoids are drawn, parameters given to
-\code{\link{ellipsoids3d_group}}.}
+\item{ellipsoid_type, ellipsoid_level, ellipsoid_singleton_color, ellipsoid_singleton_radius, ellipsoid_wire_alpha, ellipsoid_wire_lit, ellipsoid_shade_alpha, ellipsoid_shade_lit, ellipsoid_label_cex, ellipsoid_label_font, ellipsoid_label_adj, ellipsoid_label_alpha}{When ellipsoids are drawn, parameters given to
+\code{\link{ellipsoids3d}}.}
 
 \item{star_centroid_radius, star_centroid_alpha, star_link_width, star_link_alpha, star_label_cex, star_label_font, star_label_adj, star_label_alpha}{When stars are drawn, parameters given to
-\code{\link{star3d}}.}
+\code{\link{stars3d}}.}
 
 \item{group_legend_title}{Character, the title of the groups
 legend. If equal NULL or "", no title is displayed.}
@@ -246,7 +273,7 @@ containing the position of the origin of covariance
 arrows, expressed in relation to the 3D space represented
 (e.g. c(.5, .5, .5) will place the arrows in the center).}
 
-\item{arrow_head_shape_theta, arrow_head_shape_n, arrow_head_size, arrow_body_width, arrow_body_length, arrow_label_cex, arrow_label_font, arrow_label_adj, arrow_label_alpha}{When the covariance arrows are displayed, parameters
+\item{arrow_head_shape_theta, arrow_head_shape_n, arrow_head_size, arrow_body_width, arrow_body_length, arrow_label_color, arrow_label_cex, arrow_label_font, arrow_label_adj, arrow_label_alpha}{When the covariance arrows are displayed, parameters
 given to \code{\link{covArrows3D}}.}
 
 \item{fitAnalysis_cex, fitAnalysis_lwd, fitAnalysis_screePlot_color, fitAnalysis_stress_p_color, fitAnalysis_stress_l_color}{The graphical parameters of the plot for fit analysis
@@ -262,37 +289,43 @@ text presenting the results of statistical tests.}
 of the text in the test results displayed in the
 fixed 2D canvas (\code{\link[graphics]{par}}).}
 
-\item{group_legend_fig}{The fig parameter to place the groups
-legend within the fixed 2d canvas
-(\code{\link[graphics]{par}}).}
-
-\item{vip_legend_fig}{The fig parameter to place the vips
-legend within the fixed 2d canvas
-(\code{\link[graphics]{par}}).}
+\item{group_legend_fig, vip_legend_fig, fitAnalysis_fig, test_fig}{The \code{fig} parameter (\code{\link[graphics]{par}}) to
+place in the display region of the graphics device,
+respectively, the group and vip legends, the fit
+analysis plot, and the tests results.}
 
 \item{new_device, bg_color, view_theta, view_phi, view_fov, view_zoom, width, height}{The arguments passed to \code{\link{rgl_init}}.}
 
 \item{family}{The font family used in every text in the plot,
 (\code{\link[graphics]{par}}).}
-
-\item{group_legend_fig, vip_legend_fig, fitAnalysis_fig, test_fig}{The \code{fig} parameter (\code{\link[graphics]{par}}) to
-place in the display region of the graphics device,
-respectively, the group and vip legends, the fit
-analysis plot, and the tests results.}
 }
 \description{
 Generates a 3D biplot using a rgl device,
 representing the default points/scores and loadings of
-an ordination object, e.g. produced by
+an ordination object, such as a PCA produced by
 \code{\link[stats]{princomp}}).
 }
 \details{
 This function allows customising virtually every
 graphical parameter in a 3D biplot, including several extra
 elements that may be useful for multivariate explorations.
+It is focused mainly on improving basic visualization aspects
+of ordination methods through 'classical' biplots. There
+are several packages that address the creation of other
+variations of biplot: BiplotGUI, GGEBiplotGUI, multibiplotGUI,
+biplotbootGUI, NominalLogisticBiplot, OrdinalLogisticBiplot,
+ade4, vegan, MultBiplotR.
+When \code{biplot_type = "default"}, the biplot processing
+is done as in \code{\link[stats]{biplot.princomp}}, which
+follows the definition of Gabriel (1971). As in this method,
+when \code{biplot_type = "pc.biplot"}, this function creates
+biplots according with Gabriel and Odoroff (1990). Since there
+are several types of biplot transformations,
+it is possible to use 'scores' and 'loadings' that were
+already transformed, passing \code{biplot_type = NULL}.
 Groups can be represented as stars
-(\code{\link{stars3d_group}}), ellipsoids
-(\code{\link{ellipsoids3d_group}}), and/or colors,
+(\code{\link{stars3d}}), ellipsoids
+(\code{\link{ellipsoids3d}}), and/or colors,
 which can be tracked by a fully-customisable legend
 (\code{group_legend} arguments). Individual observations
 deemed exceptional (vip = Very Important Points) can be
@@ -309,7 +342,7 @@ statistical test results (enabling \code{show.tests} and
 introducing lines of text in \code{tests.text}). Every 2D
 element (legend boxes, title and subtitle, fit analysis plot
 and tests) are placed in a fixed 2D canvas (i.e. viewport)
-using \code{\link[heplots]{bgplot3d}} (heplots package).
+using \code{\link[rgl]{bgplot3d}}.
 }
 \examples{
 
@@ -336,7 +369,7 @@ biplot_3d(pca,
           show_group_legend = TRUE,
           group_legend_title = "",
           arrow_center_pos = c(.5, 0, .5),
-          arrow_body_length = 2,
+          arrow_body_length = 1,
           arrow_body_width = 2,
           view_theta = 0,
           view_zoom = 0.9)
@@ -425,23 +458,19 @@ biplot_3d(pca,
           star_label_alpha = 0,
           show_group_legend = TRUE,
           group_legend_title = "",
-          show_tests = TRUE,
           test_text = getTestText(irisTests),
-          test_fig = c(0.01,0.5,0.07,0.37),
+          test_cex = 1.5,
+          test_fig = c(0.01, 0.5, 0.7, 1),
           show_axes = FALSE,
           view_theta = 340,
           title = "testing setosa separation")
 
-# Draw a segment between setosa and other species' centroids
-x <- c(mean(pca$scores[iris$Species=="setosa", 1]),
-       mean(pca$scores[iris$Species!="setosa", 1]))
-y <- c(mean(pca$scores[iris$Species=="setosa", 2]),
-       mean(pca$scores[iris$Species!="setosa", 2]))
-z <- c(mean(pca$scores[iris$Species=="setosa", 3]),
-       mean(pca$scores[iris$Species!="setosa", 3]))
-lines3d(x, y, z, color = "purple", lwd = 5)
-
 }
 
+}
+\references{
+Gabriel, K. R. (1971). The biplot graphical display of
+  matrices with applications to principal component analysis.
+  Biometrika, 58, 453-467.
 }
 

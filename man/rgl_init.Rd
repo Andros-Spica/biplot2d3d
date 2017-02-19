@@ -4,20 +4,21 @@
 \alias{rgl_init}
 \title{Initializes a rgl device}
 \usage{
-rgl_init(new_device = FALSE, bg = "white", theta = 15, phi = 20,
-  fov = 60, zoom = 0.8, width = 800, height = 600)
+rgl_init(new_device = FALSE, bg_color = "white", view_theta = 15,
+  view_phi = 20, view_fov = 60, view_zoom = 0.8, width = 800,
+  height = 600)
 }
 \arguments{
 \item{new_device}{If there is a rgl device open, should yet another be opened?}
 
-\item{width, height}{The width and height of the rgl device window in pixels
-(\code{\link[rgl]{par3d}}).}
-
 \item{bg_color}{The background color (\code{\link[rgl]{bg3d}}).}
 
-\item{view_theta, view_phi, view_zoom}{The theta and phi angles
-(polar coordinates)
+\item{view_theta, view_phi, view_fov, view_zoom}{The theta and phi angles
+(polar coordinates), the field-of-view angle,
 and the zoom level of the viewpoint (\code{\link[rgl]{view3d}}).}
+
+\item{width, height}{The width and height of the rgl device window in pixels
+(\code{\link[rgl]{par3d}}).}
 }
 \description{
 Initializes a new rgl device using specific settings.
@@ -30,9 +31,13 @@ This function is based on the tutorial "A complete guide to 3D
 }
 \examples{
 
+\dontrun{
+
 rgl_init()
 rgl_init(bg = "black")
 rgl_init(width = 400, height = 300)
+
+}
 
 }
 \seealso{

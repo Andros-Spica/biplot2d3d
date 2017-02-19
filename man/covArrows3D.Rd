@@ -39,7 +39,7 @@ of the true distance from the origin.}
 
 \item{label_color}{The color or colors of arrows' labels.}
 
-\item{label_size, label_family, label_font, label_adj, label_alpha}{The text parameters and the alpha of the arrows' labels
+\item{label_cex, label_family, label_font, label_adj, label_alpha}{The text parameters and the alpha of the arrows' labels
 (\code{\link[rgl]{text3d}}, \code{\link[rgl]{rgl.material}}).}
 }
 \description{
@@ -86,6 +86,6 @@ covArrows3D(x = pca$loadings[,1],
 
 }
 \seealso{
-\code{\link[heplots]{arrow3d}},\code{\link{rgl_biplot}}
+\code{\link[heplots]{arrow3d}},\code{\link{biplot_3d}}
 }
 

@@ -19,11 +19,11 @@
 #' @param body_length Numeric, the length of the arrows body, as a fraction
 #'    of the true distance from the origin.
 #' @param label_color The color or colors of arrows' labels.
-#' @param label_size,label_family,label_font,label_adj,label_alpha
+#' @param label_cex,label_family,label_font,label_adj,label_alpha
 #'    The text parameters and the alpha of the arrows' labels
 #'    (\code{\link[rgl]{text3d}}, \code{\link[rgl]{rgl.material}}).
 #'
-#' @seealso \code{\link[heplots]{arrow3d}},\code{\link{rgl_biplot}}
+#' @seealso \code{\link[heplots]{arrow3d}},\code{\link{biplot_3d}}
 #'
 #' @examples
 #'

@@ -2,34 +2,51 @@
 % Please edit documentation in R/rgl_group_representation.R
 \name{stars3d}
 \alias{stars3d}
-\title{Draw stars}
+\title{Draw stars per group}
 \usage{
-stars3d(x, y, z, color = "black", label = "", centroid_color = NULL,
-  centroid_radius = 0.05, centroid_alpha = 0.5, link_color = NULL,
-  link_width = 1, link_alpha = 1, label_color = NULL, label_cex = 2,
-  label_family = "sans", label_font = 2, label_adj = c(-0.25, 0.5),
-  label_alpha = 1)
+stars3d(x, y, z, groups, group_color = rainbow(nlevels((groups))),
+  centroid_color = NULL, centroid_radius = 0.05, centroid_alpha = 0.5,
+  link_color = NULL, link_width = 1, link_alpha = 1, label_color = NULL,
+  label_cex = 1, label_family = "sans", label_font = 2,
+  label_adj = c(-0.25, 0.5), label_alpha = 1)
 }
 \arguments{
 \item{x, y, z}{Numeric vectors representing point coordinates.}
 
-\item{color}{The default color to be used in all elements.}
+\item{groups}{A factor vector of length \code{length(x)} containing
+the group assignation of each point.}
 
-\item{centroid_radius}{Numeric, the radius of the sphere used to
+\item{group_color}{A vector of length \code{nlevels(groups)} containing the
+colors to be used in each group.}
+
+\item{centroid_color}{A color or a vector of colors to be used in
+group centroid. If NULL, \code{group_color} is used.}
+
+\item{centroid_radius}{Numeric, the radius of the spheres used to
 represent group centroids (\code{\link[rgl]{spheres3d}}).}
 
 \item{centroid_alpha}{Numeric, the centroids alpha
 (\code{\link[rgl]{rgl.material}}).}
 
+\item{link_color}{A color or a vector of colors to be used in
+links between observations and centroid in each group.
+If NULL, \code{group_color} is used.}
+
 \item{link_width, link_alpha}{Numeric, the link width and alpha parameters
 (\code{\link[rgl]{segments3d}}, \code{\link[rgl]{rgl.material}}).}
 
+\item{label_color}{A color or a vector of colors to be used in
+group labels. If NULL, \code{group_color} is used.}
+
 \item{label_cex, label_family, label_font, label_adj, label_alpha}{The text
 parameters and the alpha of the group labels (\code{\link[rgl]{text3d}},
-\code{\link[rgl]{rgl.material}}).}
+\code{\link[rgl]{rgl.material}}). \code{label_adj} accepts a single
+numeric value (horizontal), a numeric vector of length two
+(horizontal, vertical) or a list of length \code{nlevels(groups)}
+containing the adj values for the specific groups.}
 }
 \description{
-Compute and draw a star (centroid with links) in a rgl device.
+Compute and draw stars (centroid with links) for each group in a rgl device.
 }
 \examples{
 
@@ -38,32 +55,49 @@ Compute and draw a star (centroid with links) in a rgl device.
 # Use iris data
 data("iris")
 
-# get setosa
-setosa <- iris[iris$Species == "setosa",]
+# introduce fictional singleton species
+modIris <- iris
+modIris$Species <- as.character(modIris$Species)
+modIris <- rbind(modIris, list(6, 1, 2, 3, "outlier"))
+modIris$Species <- factor(modIris$Species)
 
 # Initializes the rgl device
-rgl_init(zoom = 0.8)
+rgl_init(theta = 60, phi = 45, zoom = 0.75)
 
 # add axes and bounding box
-rgl_format(setosa$Sepal.Length, setosa$Sepal.Width, setosa$Petal.Length,
+rgl_format(modIris$Sepal.Length, modIris$Sepal.Width, modIris$Petal.Length,
            axes_titles = c("Sepal length", "Sepal width", "Petal length"),
            show_planes = c("XZ", "XY", "YZ"))
 
 # Add data points
-points3d(setosa[, 1], setosa[, 2], setosa[, 3], color = "black")
+points3d(modIris[modIris$Species == "setosa", 1],
+         modIris[modIris$Species == "setosa", 2],
+         modIris[modIris$Species == "setosa", 3],
+         color = "green")
+points3d(modIris[modIris$Species == "versicolor", 1],
+         modIris[modIris$Species == "versicolor", 2],
+         modIris[modIris$Species == "versicolor", 3],
+         color = "red")
+points3d(modIris[modIris$Species == "virginica", 1],
+         modIris[modIris$Species == "virginica", 2],
+         modIris[modIris$Species == "virginica", 3],
+         color = "blue")
 
-# Add star
-stars3d(setosa[, 1], setosa[, 2], setosa[, 3], label = "setosa",
-       centroid_color = "green", link_color = "red", label_color = "blue")
+# Add stars
+stars3d(modIris[,1], modIris[,2], modIris[,3],
+              groups = modIris$Species,
+              group_color = c("purple","green","red","blue"),
+              label_adj = list(c(-0.25, 0.5),
+                               c(-0.5, 1.5),
+                               c(-0.3, 1.2),
+                               c(-0.3, 1.5)))
 
-remove(setosa)
+remove(modIris)
 
 }
 
 }
 \seealso{
-\code{\link{stars3d_group}}, \code{\link{rgl_init}},
-   \code{\link[rgl]{spheres3d}}, \code{\link[rgl]{segments3d}},
-   \code{\link[rgl]{texts3d}}
+\code{\link{star3d}}
 }
 

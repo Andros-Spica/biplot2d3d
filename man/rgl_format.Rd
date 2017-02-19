@@ -27,7 +27,7 @@ points.}
 dimension, to be past to \code{\link[rgl]{aspect3d}}.
 By default, aspect is balanced (i.e. c(1, 1, 1)).
 If equals NULL, the "true" aspect is calculated
-with \code{\link{calc_aspect}}.}
+with \code{\link{calculate_aspect}}.}
 
 \item{symmetric_axes}{Logical, whether the axes should
 be drawn symmetrically.}
@@ -43,6 +43,8 @@ be drawn symmetrically.}
 \item{adapt_axes_origin}{Logical, whether to adapt the axes origin.}
 
 \item{axes_colors}{The axes colors.}
+
+\item{axes_head_size}{The size of the head (end point) of the axes.}
 
 \item{axes_titles}{The axes titles.}
 
@@ -102,7 +104,7 @@ points3d(iris[iris$Species == "virginica", 1],
 
 }
 \seealso{
-\code{\link{calc_aspect}}, \code{\link{rgl_init}},
+\code{\link{calculate_aspect}}, \code{\link{rgl_init}},
    \code{\link[rgl]{aspect3d}}, \code{\link[rgl]{axis3d}},
    \code{\link[rgl]{bbox3d}}
 }

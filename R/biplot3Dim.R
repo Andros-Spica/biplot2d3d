@@ -3,7 +3,7 @@
 #'
 #' Generates a 3D biplot using a rgl device,
 #' representing the default points/scores and loadings of
-#' an ordination object, e.g. produced by
+#' an ordination object, such as a PCA produced by
 #' \code{\link[stats]{princomp}}).
 #'
 #' @param ordination_object A R object containing a direct
@@ -22,6 +22,23 @@
 #'    "PCoA" for Principal Coordinates Analysis,
 #'    "NMDS" for Non-metric Multidimensional Scaling, and
 #'    "LDA" for Linear Discriminant Analysis.
+#'
+#' @param biplot_type Character, indicating the type of
+#'    biplot scalling of data: "default" and
+#'    "pc.biplot", corresponding to the transformations
+#'    performed in \code{\link[stats]{biplot.princomp}}
+#'    with \code{pc.biplot = FALSE} ("default") and
+#'    \code{pc.biplot = TRUE} ("pc.biplot"). If NULL,
+#'    no processing is performed, assuming that data
+#'    within \code{ordination_object} was previously prepared.
+#' @param rows_over_columns Numeric, the value defining the
+#'    degree in which distances between observations have
+#'    priority over distances between variables
+#'    (0 = variable-focused, 1 = observation-focused).
+#'    It corresponds to the argument \code{scale} in
+#'    \code{\link[stats]{biplot.princomp}}. It will be
+#'    ignored if \code{biplot_type = NULL}.
+#'
 #' @param groups A factor variable containing the group
 #'    assignation of each point.
 #' @param vips A list of logical (Boolean) vectors identifying
@@ -51,24 +68,28 @@
 #' @param planes_colors,planes_textures,planes_alpha,planes_lit,planes_shininess
 #'    The arguments passed to \code{\link{rgl_format}}
 #'    to create dimensional planes.
-#' @param bbox_color,bbox_alpha,bbox_shininess,bbox_xat,bbox_xlab,bbox_xunit,bbox_xlen,bbox_yat,bbox_ylab,bbox_yunit,bbox_ylen,bbox_zat,bbox_zlab,bbox_zunit,bbox_zlen,bbox_marklen,bbox_expand,bbox_draw_front The arguments passed to
+#' @param bbox_color,bbox_alpha,bbox_shininess,bbox_xat,bbox_xlab,bbox_xunit,bbox_xlen,bbox_yat,bbox_ylab,bbox_yunit,bbox_ylen,bbox_zat,bbox_zlab,bbox_zunit,bbox_zlen,bbox_marklen,bbox_marklen_rel,bbox_expand,bbox_draw_front The arguments passed to
 #'    \code{\link{rgl_format}} to create a bounding box.
 #'
 #' @param title Character, title to be placed in the
 #'    fixed 2D canvas ('main' in \code{\link[graphics]{title}}).
-#' @param title_line,title_color,title_size,title_font,title_adj the line, color, size, font, and justification of the
+#' @param title_line,title_color,title_size,title_font,title_adj the line,
+#'    color, size, font, and justification of the
 #'    title (\code{line}, \code{col.main}, \code{cex.main},
 #'    \code{font.main}, and \code{adj} in
 #'    \code{\link[graphics]{title}}, \code{\link[graphics]{par}}).
 #' @param subtitle Character, subtitle to be placed in
 #'    the fixed 2D canvas ('main' in \code{\link[graphics]{text}}).
-#' @param subtitle_side,subtitle_line,subtitle_color,subtitle_cex,subtitle_font,subtitle_adj the position, color, size, font,
-#'    and justification of the subtitle ('side', 'line',
-#'    'col', 'cex', font and adj in \code{\link[graphics]{mtext}},
+#' @param subtitle_position Numeric verctor of length two indicating the
+#'    position of the subtitle in the fixed 2D canvas ('main'
+#'    in \code{\link[graphics]{text}}).
+#' @param subtitle_color,subtitle_cex,subtitle_font,subtitle_adj the color, size, font,
+#'    and justification of the subtitle ('col', 'cex',
+#'    font and adj in \code{\link[graphics]{text}},
 #'    \code{\link[graphics]{par}}).
 #'
 #' @param point_type Character, accepting three values: "point",
-#'    the default \code{\link[rgl]{points3D}}; "label",
+#'    the default \code{\link[rgl]{points3d}}; "label",
 #'    displaying the content of \code{point_label}; and
 #'    "point and label", placing both points and labels.
 #' @param point_label Character, vector labelling every
@@ -77,6 +98,8 @@
 #'    (\code{nrow(ordination_object$points) ==
 #'    length(point_label)}).
 #' @param point_size The size or scale given to \code{size}
+#'    in \code{\link[rgl]{points3d}}
+#' @param point_alpha The alpha of points given to \code{alpha}
 #'    in \code{\link[rgl]{points3d}}
 #' @param point_label_cex,point_label_font,point_label_adj,point_label_alpha
 #'    The text parameters and the alpha of the arrows' labels.
@@ -89,12 +112,12 @@
 #'    representation to draw: "stars", "ellipsoids", or
 #'    "stars and ellipsoids". Neither stars or ellipsoids
 #'    are drawn, if NULL is given instead.
-#' @param ellipsoid_type,ellipsoid_level,ellipsoid_singleton_radius,ellipsoid_wire_alpha,ellipsoid_wire_lit,ellipsoid_shade_alpha,ellipsoid_shade_lit,ellipsoid_label_cex,ellipsoid_label_font,ellipsoid_label_adj,ellipsoid_label_alpha
+#' @param ellipsoid_type,ellipsoid_level,ellipsoid_singleton_color,ellipsoid_singleton_radius,ellipsoid_wire_alpha,ellipsoid_wire_lit,ellipsoid_shade_alpha,ellipsoid_shade_lit,ellipsoid_label_cex,ellipsoid_label_font,ellipsoid_label_adj,ellipsoid_label_alpha
 #'    When ellipsoids are drawn, parameters given to
-#'    \code{\link{ellipsoids3d_group}}.
+#'    \code{\link{ellipsoids3d}}.
 #' @param star_centroid_radius,star_centroid_alpha,star_link_width,star_link_alpha,star_label_cex,star_label_font,star_label_adj,star_label_alpha
 #'    When stars are drawn, parameters given to
-#'    \code{\link{star3d}}.
+#'    \code{\link{stars3d}}.
 #' @param group_legend_title Character, the title of the groups
 #'    legend. If equal NULL or "", no title is displayed.
 #' @param group_legend_title_pos A numeric vector of length
@@ -105,9 +128,6 @@
 #'    legend title (\code{\link[graphics]{par}}).
 #' @param group_legend_box_color The background color of the
 #'    groups legend box.
-#' @param group_legend_fig The fig parameter to place the groups
-#'    legend within the fixed 2d canvas
-#'    (\code{\link[graphics]{par}}).
 #' @param group_legend_key_margin The x position of the keys
 #'    within the groups legend box. Values from 0 to 1.
 #' @param group_legend_key_pch,group_legend_key_lwd,group_legend_key_cex
@@ -134,9 +154,6 @@
 #'    title (\code{\link[graphics]{par}}).
 #' @param vip_legend_box_color The background color of the
 #'    vips legend box.
-#' @param vip_legend_fig The fig parameter to place the vips
-#'    legend within the fixed 2d canvas
-#'    (\code{\link[graphics]{par}}).
 #' @param vip_legend_key_margin The x position of the keys
 #'    within the vips legend box. Values from 0 to 1.
 #' @param vip_legend_key_cexFactor The sizing factor of the
@@ -157,7 +174,7 @@
 #'    containing the position of the origin of covariance
 #'    arrows, expressed in relation to the 3D space represented
 #'    (e.g. c(.5, .5, .5) will place the arrows in the center).
-#' @param arrow_head_shape_theta,arrow_head_shape_n,arrow_head_size,arrow_body_width,arrow_body_length,arrow_label_cex,arrow_label_font,arrow_label_adj,arrow_label_alpha
+#' @param arrow_head_shape_theta,arrow_head_shape_n,arrow_head_size,arrow_body_width,arrow_body_length,arrow_label_color,arrow_label_cex,arrow_label_font,arrow_label_adj,arrow_label_alpha
 #'    When the covariance arrows are displayed, parameters
 #'    given to \code{\link{covArrows3D}}.
 #'
@@ -187,9 +204,23 @@
 #' @details This function allows customising virtually every
 #' graphical parameter in a 3D biplot, including several extra
 #' elements that may be useful for multivariate explorations.
+#' It is focused mainly on improving basic visualization aspects
+#' of ordination methods through 'classical' biplots. There
+#' are several packages that address the creation of other
+#' variations of biplot: BiplotGUI, GGEBiplotGUI, multibiplotGUI,
+#' biplotbootGUI, NominalLogisticBiplot, OrdinalLogisticBiplot,
+#' ade4, vegan, MultBiplotR.
+#' When \code{biplot_type = "default"}, the biplot processing
+#' is done as in \code{\link[stats]{biplot.princomp}}, which
+#' follows the definition of Gabriel (1971). As in this method,
+#' when \code{biplot_type = "pc.biplot"}, this function creates
+#' biplots according with Gabriel and Odoroff (1990). Since there
+#' are several types of biplot transformations,
+#' it is possible to use 'scores' and 'loadings' that were
+#' already transformed, passing \code{biplot_type = NULL}.
 #' Groups can be represented as stars
-#' (\code{\link{stars3d_group}}), ellipsoids
-#' (\code{\link{ellipsoids3d_group}}), and/or colors,
+#' (\code{\link{stars3d}}), ellipsoids
+#' (\code{\link{ellipsoids3d}}), and/or colors,
 #' which can be tracked by a fully-customisable legend
 #' (\code{group_legend} arguments). Individual observations
 #' deemed exceptional (vip = Very Important Points) can be
@@ -206,7 +237,13 @@
 #' introducing lines of text in \code{tests.text}). Every 2D
 #' element (legend boxes, title and subtitle, fit analysis plot
 #' and tests) are placed in a fixed 2D canvas (i.e. viewport)
-#' using \code{\link[heplots]{bgplot3d}} (heplots package).
+#' using \code{\link[rgl]{bgplot3d}}.
+#'
+#' @references
+#'
+#' Gabriel, K. R. (1971). The biplot graphical display of
+#'   matrices with applications to principal component analysis.
+#'   Biometrika, 58, 453-467.
 #'
 #' @examples
 #'
@@ -233,7 +270,7 @@
 #'           show_group_legend = TRUE,
 #'           group_legend_title = "",
 #'           arrow_center_pos = c(.5, 0, .5),
-#'           arrow_body_length = 2,
+#'           arrow_body_length = 1,
 #'           arrow_body_width = 2,
 #'           view_theta = 0,
 #'           view_zoom = 0.9)
@@ -322,27 +359,20 @@
 #'           star_label_alpha = 0,
 #'           show_group_legend = TRUE,
 #'           group_legend_title = "",
-#'           show_tests = TRUE,
 #'           test_text = getTestText(irisTests),
-#'           test_fig = c(0.01,0.5,0.07,0.37),
+#'           test_cex = 1.5,
+#'           test_fig = c(0.01, 0.5, 0.7, 1),
 #'           show_axes = FALSE,
 #'           view_theta = 340,
 #'           title = "testing setosa separation")
-#'
-#' # Draw a segment between setosa and other species' centroids
-#' x <- c(mean(pca$scores[iris$Species=="setosa", 1]),
-#'        mean(pca$scores[iris$Species!="setosa", 1]))
-#' y <- c(mean(pca$scores[iris$Species=="setosa", 2]),
-#'        mean(pca$scores[iris$Species!="setosa", 2]))
-#' z <- c(mean(pca$scores[iris$Species=="setosa", 3]),
-#'        mean(pca$scores[iris$Species!="setosa", 3]))
-#' lines3d(x, y, z, color = "purple", lwd = 5)
 #'
 #'}
 #'
 biplot_3d <-
   function(ordination_object,
            ordination_method = "PCA",
+           biplot_type = "default",
+           rows_over_columns = 0.5,
            groups = NULL,
            vips = NULL,
 
@@ -399,9 +429,7 @@ biplot_3d <-
            title_adj = .5,
            subtitle = NULL,
            subtitle_color = "black",
-           subtitle_pos = c(0.03, .005),
-           subtitle_side = 1,
-           subtitle_line = 3,
+           subtitle_position = c(0.03, .005),
            subtitle_cex = 2,
            subtitle_font = 2,
            subtitle_adj = 0,
@@ -419,6 +447,8 @@ biplot_3d <-
            group_representation = NULL,
            ellipsoid_type = "wire and shade",
            ellipsoid_level = 0.95,
+           ellipsoid_singleton_color = NULL,
+           ellipsoid_singleton_radius = 0.1,
            ellipsoid_wire_alpha = 0.2,
            ellipsoid_wire_lit = FALSE,
            ellipsoid_shade_alpha = 0.1,
@@ -476,9 +506,9 @@ biplot_3d <-
            arrow_head_shape_theta = pi / 6,
            arrow_head_shape_n = 3,
            arrow_head_size = 0.1,
-           arrow_body_length = 1,
+           arrow_body_length = 0.2,
            arrow_body_width = 1,
-           arrow_label_colors = "black",
+           arrow_label_color = "black",
            arrow_label_cex = 0.8,
            arrow_label_font = 2,
            arrow_label_adj = 0.5,
@@ -541,6 +571,32 @@ biplot_3d <-
 
       }
 
+      isPCbiplot <- FALSE
+
+      if (biplot_type == "pc.biplot") isPCbiplot <- TRUE
+
+      lambda <- get_lambda(sdev,
+                           n.obs = nrow(scores),
+                           dimensions = 1:2,
+                           scale = rows_over_columns,
+                           pc.biplot = isPCbiplot)
+
+      if (biplot_type == "default" || biplot_type == "pc.biplot") {
+
+        scores <- t(t(scores)/lambda)
+        loadings <- t(t(loadings) * lambda)
+
+      } else {
+
+        if (!is.null(biplot_type)) {
+
+          stop("The biplot_type given is not supported. Choose between 'default' and 'pc.biplot' or NULL, if data was previously transformed.",
+               call. = FALSE)
+
+        }
+
+      }
+
       eigenvalues <- (sdev) ^ 2
       names(eigenvalues) <- rep("", length(eigenvalues))
 
@@ -588,8 +644,7 @@ biplot_3d <-
     # ordination_object is interpreted as a data frame.
     if (is.null(ordination_method)) {
 
-      warning("ordination_method = NULL, so the ordination_object is interpreted
-              as a data frame.\nNo covariance arrows or fit analysis will be displayed.",
+      warning("ordination_method = NULL, so the ordination_object is interpreted as a data frame.\nNo covariance arrows or fit analysis will be displayed.",
               call = FALSE)
 
       scores <- ordination_object
@@ -601,14 +656,13 @@ biplot_3d <-
     # If the method given is not supported
     else {
 
-      stop(paste("The method '", ordination_method, "' is not supported or not
-                 properly written.\nPlease pass either 'PCA', 'PCoA', 'NMDS', or
-                 'LDA' as the ordination_method argument.", sep = ""),
+      stop(paste("The method '", ordination_method, "' is not supported or not properly written.\nPlease pass either 'PCA', 'PCoA', 'NMDS', or 'LDA' as the ordination_method argument.", sep = ""),
            call. = FALSE)
 
     }
 
-    # If the row names don't exist, fill them with the index numbers
+    # If the row names don't exist,
+    # fill them with the index numbers
     if (is.null(row.names(scores))) {
 
       row.names(scores) <- as.character(1:nrow(scores))
@@ -626,9 +680,9 @@ biplot_3d <-
     loadings <- ordination_object$loadings[, 1:3]
 
 
-    # Set up parameters ===============================================
+    # Set up parameters ===========================================
 
-    # Load subtitle ---------------------------------------------------
+    # Load subtitle -----------------------------------------------
 
     sub <- subtitle
 
@@ -676,25 +730,54 @@ biplot_3d <-
 
     }
 
-    # Prepare the parameters for distinguish points by groups ---------
+    # Prepare the parameters for distinguish points by groups -----
 
     groups_ <- groups
     group_color_ <- group_color
     group_pch <- NULL
 
-    # if groups are not given, display points as belonging all to the same group
+    # if groups are not given,
+    # display points as belonging all to the same group
     if (is.null(groups)) {
 
       groups_ <- factor(rep("", nrow(scores)))
 
     }
 
-    # if group_color is not specified, get diferent colors for each group
-    if (is.null(group_color)) {
+    if (is.null(groups)) {
 
-      group_color_ <- rainbow(nlevels((groups_)))
+      # if groups are not given,
+      # display points as belonging all to the same group
+      groups_ <- factor(rep("", nrow(scores)))
+      if (is.null(group_color)) group_color_ <- "black"
 
-    }
+    } else {
+
+      # if group_color is not specified,
+      # get diferent colors for each group
+      if (is.null(group_color)) {
+
+        group_color_ <- rainbow(nlevels((groups_)))
+
+      } else {
+
+        if (length(group_color) < nlevels(groups_)) {
+
+          if (length(group_color) == 1) {
+
+            group_color_ <- rep(group_color, nlevels(groups_))
+
+          } else {
+
+            stop("length(group_color) < nlevels(groups).
+                 Please specify colors for all groups or
+                 choose a single color.",
+                 call. = FALSE)
+
+          }
+        }
+      }
+      }
 
     # Recognize if point labels are used to differentiate groups.
     # If so, save group_pch to reflect this in the legend.
@@ -704,19 +787,19 @@ biplot_3d <-
 
     }
 
-    # Plot =============================================================
+    # Plot ========================================================
 
-    # initialize the rgl device ----------------------------------------
+    # initialize the rgl device -----------------------------------
 
-    rgl_init(bg = bg_color,
-             theta = view_theta,
-             phi = view_phi,
-             fov = view_fov,
-             zoom = view_zoom,
+    rgl_init(bg_color = bg_color,
+             view_theta = view_theta,
+             view_phi = view_phi,
+             view_fov = view_fov,
+             view_zoom = view_zoom,
              width = width,
              height = height)
 
-    # Draw the 2D layer--------------------------------------------------
+    # Draw the 2D layer--------------------------------------------
 
     rgl::bgplot3d({
 
@@ -724,7 +807,7 @@ biplot_3d <-
 
       plot.new()
 
-      # title-------------------------------------------------------------
+      # title------------------------------------------------------
 
       title(main = title,
             line = title_line,
@@ -734,20 +817,18 @@ biplot_3d <-
             font.main = title_font,
             adj = title_adj)
 
-      # subtitle----------------------------------------------------------
+      # subtitle---------------------------------------------------
 
-      text(sub_pos[1],
-           sub_pos[2],
+      text(subtitle_position[1],
+           subtitle_position[2],
            labels = sub,
-           side = sub_side,
-           line = sub_line,
-           col = sub_color,
-           cex = sub_cex,
+           col = subtitle_color,
+           cex = subtitle_cex,
            family = family,
-           font = sub_font,
-           adj = sub_adj)
+           font = subtitle_font,
+           adj = subtitle_adj)
 
-      # insert the plot corresponding to the fit analysis -----------------
+      # insert the plot corresponding to the fit analysis ---------
       # of the ordination object
 
       if (show_fitAnalysis) {
@@ -761,8 +842,7 @@ biplot_3d <-
           # for the NMDS, the stress plot is shown
           if (!requireNamespace("vegan", quietly = TRUE)){
 
-            stop("if ordination_method is NMDS (Non.metric Multidimensional Scaling),\n
-                  the vegan package is required for drawing a stress plot.",
+            stop("if ordination_method is NMDS (Non.metric Multidimensional Scaling),\nthe vegan package is required for drawing a stress plot.",
                  call. = FALSE)
 
           }
@@ -799,7 +879,7 @@ biplot_3d <-
         ### TO DO: add LDA fit analysis
       }
 
-      # Display tests results -------------------------------------------
+      # Display tests results -------------------------------------
 
       if (!is.null(test_text)) {
 
@@ -824,7 +904,7 @@ biplot_3d <-
         }
       }
 
-      # Create the legend for the vips ------------------------------------
+      # Create the legend for the vips ----------------------------
 
       if (show_vip_legend & !is.null(vips)) {
 
@@ -858,7 +938,8 @@ biplot_3d <-
 
         for (i in 1:length(vips)) {
 
-          # the following gets the overrides for the graphical arguments
+          # the following gets the overrides
+          # for the graphical arguments
           # being them either vectors or single values.
           vip_pch_ <- vip_pch[1]
           if (length(vip_pch) == length(vips)) {
@@ -909,7 +990,7 @@ biplot_3d <-
         }
       }
 
-      # Create the legend for groups ----------------------------------
+      # Create the legend for groups ------------------------------
       # (color -> groups)
 
       if (show_group_legend) {
@@ -1020,16 +1101,18 @@ biplot_3d <-
 
     }
 
-    # Mark vips -----------------------------------------------------
+    # Mark vips ---------------------------------------------------
     # (Very Important Points, e.g. outliers), when any is given,
     # distinguishing the various detection methods
 
     if (!is.null(vips)) {
 
-      # Create markings following each criterium (column or list element in vips)
+      # Create markings following each criterium
+      # (column or list element in vips)
       for (i in 1:length(vips)) {
 
-        # the following gets the overrides for the graphical arguments
+        # the following gets the overrides for the
+        # graphical arguments
         # being them either vectors or single values.
 
         vip_pch_ <- vip_pch[1]
@@ -1061,7 +1144,7 @@ biplot_3d <-
     # get aspect
     asp <- aspect
     if (is.null(aspect)) {
-      asp <- calc_aspect(x, y, z)
+      asp <- calculate_aspect(x, y, z)
     }
 
     # set up background elements of the plot
@@ -1104,7 +1187,7 @@ biplot_3d <-
                bbox_expand = bbox_expand,
                bbox_draw_front = bbox_draw_front)
 
-    # Create group-related elements (ellipsoids and stars)---------------------
+    # Create group-related elements (ellipsoids and stars)---------
 
     if (!is.null(group_representation)) {
 
@@ -1112,11 +1195,13 @@ biplot_3d <-
           group_representation == "stars and ellipsoids") {
 
         # Compute and draw the ellipsoids of concentration
-        ellipsoids3d_group(x = x, y = y, z = z,
+        ellipsoids3d(x = x, y = y, z = z,
                            groups = groups_,
                            group_color = group_color_,
                            type = ellipsoid_type,
                            level = ellipsoid_level,
+                           singleton_color = ellipsoid_singleton_color,
+                           singleton_radius = ellipsoid_singleton_radius,
                            wire_alpha = ellipsoid_wire_alpha,
                            wire_lit = ellipsoid_wire_lit,
                            shade_alpha = ellipsoid_shade_alpha,
@@ -1133,7 +1218,7 @@ biplot_3d <-
           group_representation == "stars and ellipsoids") {
 
         # Star grouping
-        stars3d_group(x = x, y = y, z = z,
+        stars3d(x = x, y = y, z = z,
                       groups = groups_,
                       group_color = group_color_,
                       centroid_radius = star_centroid_radius,
@@ -1149,7 +1234,7 @@ biplot_3d <-
       }
     }
 
-    # insert the miniature of variables covariances (arrows) ------------
+    # insert the miniature of variables covariances (arrows) ------
     if (show_arrows) {
 
       # get a position for arrows center
@@ -1174,7 +1259,7 @@ biplot_3d <-
                   body_length = arrow_body_length,
                   body_width = arrow_body_width,
                   color = arrow_color,
-                  label_color = arrow_label_colors,
+                  label_color = arrow_label_color,
                   label_cex = arrow_label_cex,
                   label_family = family,
                   label_font = arrow_label_font,
@@ -1188,23 +1273,25 @@ biplot_3d <-
 #' Get colors for the different levels of a factor variable
 #'
 #' @param groups A factor variable containing the group of each observation.
-#' @param colors The default colors to be used.
+#' @param color_palette The palette or vector of colors to be used.
 #'
 #' @return Return a vector of colors matching the levels of groups.
 #'
-get_colors <- function(groups, group_col = palette()) {
+get_colors <- function(groups, color_palette = palette()) {
 
   groups <- as.factor(groups)
 
   ngrps <- nlevels(groups)
 
-  if (ngrps > length(group_col)) group_col <- rep(group_col, ngrps)
+  color_palette_ <- color_palette
 
-  color <- group_col[as.numeric(groups)]
+  if (ngrps > length(color_palette)) color_palette_ <- rep(color_palette, ngrps)
 
-  names(color) <- as.vector(groups)
+  colors <- color_palette_[as.numeric(groups)]
 
-  return(color)
+  names(colors) <- as.vector(groups)
+
+  return(colors)
 
 }
 

@@ -8,9 +8,9 @@
 #' @param x,y,z Numeric vectors representing point coordinates.
 #' @param groups A factor vector of length \code{length(x)} containing
 #'    the group assignation of each point.
-#' @param group_colors A vector of length \code{nlevels(groups)} containing the
+#' @param group_color A vector of length \code{nlevels(groups)} containing the
 #'    colors to be used in each group.
-#' @param singleton_colors,wire_colors,shade_colors,label_colors The
+#' @param singleton_color,wire_color,shade_color,label_color The
 #'    specific colors to be used in each ellipsoid's elements for each group.
 #'    If not NULL, they override the \code{colors} argument.
 #' @param type a character representing the type of ellipsoid filling: "wire",
@@ -32,7 +32,7 @@
 #'    (horizontal, vertical) or a list of length \code{nlevels(groups)}
 #'    containing the adj values for the specific groups.
 #'
-#' @seealso \code{\link{ellipsoids3d}}, \code{\link[rgl]{spheres3d}}
+#' @seealso \code{\link{ellipsoid3d}}, \code{\link[rgl]{spheres3d}}
 #'
 #' @examples
 #'
@@ -70,27 +70,27 @@
 #'          color = "blue")
 #'
 #' # Add ellipsoids
-#' ellipsoids3d_group(modIris[, 1], modIris[, 2], modIris[, 3],
-#'                    groups = modIris$Species,
-#'                    group_colors = c("purple", "green", "red", "blue"))
+#' ellipsoids3d(modIris[, 1], modIris[, 2], modIris[, 3],
+#'              groups = modIris$Species,
+#'              group_color = c("purple", "green", "red", "blue"))
 #'
 #' remove(modIris)
 #' }
 #'
-ellipsoids3d_group <-
+ellipsoids3d <-
   function(x, y, z, groups,
-           group_colors = rainbow(nlevels((groups))),
+           group_color = rainbow(nlevels((groups))),
            type = "wire and shade",
            level = 0.95,
-           singleton_colors = NULL,
+           singleton_color = NULL,
            singleton_radius = 0.1,
-           wire_colors = NULL,
+           wire_color = NULL,
            wire_alpha = 0.2,
            wire_lit = FALSE,
-           shade_colors = NULL,
+           shade_color = NULL,
            shade_alpha = 0.1,
            shade_lit = FALSE,
-           label_colors = NULL,
+           label_color = NULL,
            label_cex = 1,
            label_family = "sans",
            label_font = 2,
@@ -98,14 +98,14 @@ ellipsoids3d_group <-
            label_alpha = 1) {
 
     # color override (was it introduced?)
-    singleton_colors_ <- singleton_colors
-    if (is.null(singleton_colors))   singleton_colors_ <- group_colors
-    wire_colors_ <- wire_colors
-    if (is.null(wire_colors))        wire_colors_ <- group_colors
-    shade_colors_ <- shade_colors
-    if (is.null(shade_colors))       shade_colors_ <- group_colors
-    label_colors_ <- label_colors
-    if (is.null(label_colors))       label_colors_ <- group_colors
+    singleton_color_ <- singleton_color
+    if (is.null(singleton_color))   singleton_color_ <- group_color
+    wire_color_ <- wire_color
+    if (is.null(wire_color))        wire_color_ <- group_color
+    shade_color_ <- shade_color
+    if (is.null(shade_color))       shade_color_ <- group_color
+    label_color_ <- label_color
+    if (is.null(label_color))       label_color_ <- group_color
 
     levs <- levels(groups)
 
@@ -119,21 +119,21 @@ ellipsoids3d_group <-
       zz <- z[selected]
 
       # color override (Only if it has the required length?)
-      singleton_color_ <- singleton_colors_[1]
+      singleton_color_ <- singleton_color_[1]
       if (length(singleton_color_) == nlevels(groups)) {
-        singleton_color_ <-singleton_colors_[i]
+        singleton_color_ <-singleton_color_[i]
       }
-      wire_color_ <- wire_colors_[1]
-      if (length(wire_colors_) == nlevels(groups)) {
-        wire_color_ <- wire_colors_[i]
+      wire_color_ <- wire_color_[1]
+      if (length(wire_color_) == nlevels(groups)) {
+        wire_color_ <- wire_color_[i]
       }
-      shade_color_ <- shade_colors_[1]
-      if (length(shade_colors_) == nlevels(groups)) {
-        shade_color_ <- shade_colors_[i]
+      shade_color_ <- shade_color_[1]
+      if (length(shade_color_) == nlevels(groups)) {
+        shade_color_ <- shade_color_[i]
       }
-      label_color_ <- label_colors_[1]
-      if (length(label_colors_) == nlevels(groups)) {
-        label_color_ <- label_colors_[i]
+      label_color_ <- label_color_[1]
+      if (length(label_color_) == nlevels(groups)) {
+        label_color_ <- label_color_[i]
       }
 
       # Is label_adj specified for each group?
@@ -144,7 +144,7 @@ ellipsoids3d_group <-
 
       if (length(xx) > 3) {
 
-        ellipsoids3d(xx, yy, zz,
+        ellipsoid3d(xx, yy, zz,
                     type = type,
                     level = level,
                     label = group,
@@ -204,7 +204,7 @@ ellipsoids3d_group <-
 #'    labels text parameters (\code{\link[rgl]{text3d}},
 #'    \code{\link[rgl]{rgl.material}}).
 #'
-#' @seealso \code{\link{ellipsoids3d_group}}, \code{\link{rgl_init}},
+#' @seealso \code{\link{ellipsoid3d}}, \code{\link{rgl_init}},
 #'    \code{\link[rgl]{ellipse3d}}, \code{\link[rgl]{wire3d}},
 #'    \code{\link[rgl]{shade3d}}, \code{\link[rgl]{texts3d}}
 #'
@@ -229,15 +229,15 @@ ellipsoids3d_group <-
 #' points3d(setosa[, 1], setosa[, 2], setosa[, 3], color = "black")
 #'
 #' # Add ellipsoid
-#' ellipsoids3d(setosa[, 1], setosa[, 2], setosa[, 3], label = "setosa",
-#'              wire_color = "green", shade_color = "red",
-#'              label_color = "blue", label_adj = c(-1, 0.5))
+#' ellipsoid3d(setosa[, 1], setosa[, 2], setosa[, 3], label = "setosa",
+#'             wire_color = "green", shade_color = "red",
+#'             label_color = "blue", label_adj = c(-1, 0.5))
 #'
 #' remove(setosa)
 #'
 #' }
 #'
-ellipsoids3d <- function(x, y, z,
+ellipsoid3d <- function(x, y, z,
                         color = "black",
                         type = "wire and shade",
                         level = 0.95,
@@ -301,14 +301,21 @@ ellipsoids3d <- function(x, y, z,
 #' @param x,y,z Numeric vectors representing point coordinates.
 #' @param groups A factor vector of length \code{length(x)} containing
 #'    the group assignation of each point.
-#' @param colors A vector of length \code{nlevels(groups)} containing the
+#' @param group_color A vector of length \code{nlevels(groups)} containing the
 #'    colors to be used in each group.
+#' @param centroid_color A color or a vector of colors to be used in
+#'    group centroid. If NULL, \code{group_color} is used.
 #' @param centroid_radius Numeric, the radius of the spheres used to
 #'    represent group centroids (\code{\link[rgl]{spheres3d}}).
 #' @param centroid_alpha Numeric, the centroids alpha
 #'    (\code{\link[rgl]{rgl.material}}).
+#' @param link_color A color or a vector of colors to be used in
+#'    links between observations and centroid in each group.
+#'    If NULL, \code{group_color} is used.
 #' @param link_width,link_alpha Numeric, the link width and alpha parameters
 #'    (\code{\link[rgl]{segments3d}}, \code{\link[rgl]{rgl.material}}).
+#' @param label_color A color or a vector of colors to be used in
+#'    group labels. If NULL, \code{group_color} is used.
 #' @param label_cex,label_family,label_font,label_adj,label_alpha The text
 #'    parameters and the alpha of the group labels (\code{\link[rgl]{text3d}},
 #'    \code{\link[rgl]{rgl.material}}). \code{label_adj} accepts a single
@@ -316,7 +323,7 @@ ellipsoids3d <- function(x, y, z,
 #'    (horizontal, vertical) or a list of length \code{nlevels(groups)}
 #'    containing the adj values for the specific groups.
 #'
-#' @seealso \code{\link{stars3d}}
+#' @seealso \code{\link{star3d}}
 #'
 #' @examples
 #'
@@ -354,9 +361,9 @@ ellipsoids3d <- function(x, y, z,
 #'          color = "blue")
 #'
 #' # Add stars
-#' stars3d_group(modIris[,1], modIris[,2], modIris[,3],
+#' stars3d(modIris[,1], modIris[,2], modIris[,3],
 #'               groups = modIris$Species,
-#'               group_colors = c("purple","green","red","blue"),
+#'               group_color = c("purple","green","red","blue"),
 #'               label_adj = list(c(-0.25, 0.5),
 #'                                c(-0.5, 1.5),
 #'                                c(-0.3, 1.2),
@@ -366,16 +373,16 @@ ellipsoids3d <- function(x, y, z,
 #'
 #' }
 #'
-stars3d_group <-
+stars3d <-
   function(x, y, z, groups,
-           group_colors = rainbow(nlevels((groups))),
-           centroid_colors = NULL,
+           group_color = rainbow(nlevels((groups))),
+           centroid_color = NULL,
            centroid_radius = 0.05,
            centroid_alpha = 0.5,
-           link_colors = NULL,
+           link_color = NULL,
            link_width = 1,
            link_alpha = 1,
-           label_colors = NULL,
+           label_color = NULL,
            label_cex = 1,
            label_family = "sans",
            label_font = 2,
@@ -383,12 +390,12 @@ stars3d_group <-
            label_alpha = 1) {
 
     # color override (was it introduced?)
-    centroid_colors_ <- centroid_colors
-    if (is.null(centroid_colors)) centroid_colors_ <- group_colors
-    link_colors_ <- link_colors
-    if (is.null(link_colors))     link_colors_ <- link_colors
-    label_colors_ <- label_colors
-    if (is.null(label_colors))    label_colors_ <- label_colors
+    centroid_color_ <- centroid_color
+    if (is.null(centroid_color)) centroid_color_ <- group_color
+    link_color_ <- link_color
+    if (is.null(link_color))     link_color_ <- link_color
+    label_color_ <- label_color
+    if (is.null(label_color))    label_color_ <- label_color
 
     levs <- levels(groups)
 
@@ -402,17 +409,17 @@ stars3d_group <-
       zz <- z[selected]
 
       # color override (Only if it has the required length?)
-      centroid_color_ <- centroid_colors_[1]
-      if (length(centroid_colors_) == nlevels(groups)) {
-        centroid_color_ <- centroid_colors_[i]
+      centroid_color_ <- centroid_color_[1]
+      if (length(centroid_color_) == nlevels(groups)) {
+        centroid_color_ <- centroid_color_[i]
       }
-      link_color_ <- link_colors_[1]
-      if (length(link_colors_) == nlevels(groups)) {
-        link_color_ <- link_colors_[i]
+      link_color_ <- link_color_[1]
+      if (length(link_color_) == nlevels(groups)) {
+        link_color_ <- link_color_[i]
       }
-      label_color_ <- label_colors_[1]
-      if (length(label_colors_) == nlevels(groups)) {
-        label_color_ <- label_colors_[i]
+      label_color_ <- label_color_[1]
+      if (length(label_color_) == nlevels(groups)) {
+        label_color_ <- label_color_[i]
       }
 
       # Is label_adj specified for each group?
@@ -421,7 +428,7 @@ stars3d_group <-
         label_adj_ <- label_adj[[i]]
       }
 
-      stars3d(xx, yy, zz,
+      star3d(xx, yy, zz,
              color = centroid_color_,
              label = group,
              centroid_radius = centroid_radius,
@@ -445,16 +452,20 @@ stars3d_group <-
 #' @param x,y,z Numeric vectors representing point coordinates.
 #' @param color The default color to be used in all elements.
 #' @param centroid_radius Numeric, the radius of the sphere used to
-#'    represent group centroids (\code{\link[rgl]{spheres3d}}).
+#'    represent the centroid of the distribution (\code{\link[rgl]{spheres3d}}).
+#' @param centroid_color The color of centroid point of the distribution.
 #' @param centroid_alpha Numeric, the centroids alpha
 #'    (\code{\link[rgl]{rgl.material}}).
+#' @param link_color The color of the links connecting centroid and points.
 #' @param link_width,link_alpha Numeric, the link width and alpha parameters
 #'    (\code{\link[rgl]{segments3d}}, \code{\link[rgl]{rgl.material}}).
+#' @param label The label placed at the centroid of the distribution.
+#' @param label_color The color of the centroid label.
 #' @param label_cex,label_family,label_font,label_adj,label_alpha The text
-#'    parameters and the alpha of the group labels (\code{\link[rgl]{text3d}},
+#'    parameters and the alpha of the centroid label (\code{\link[rgl]{text3d}},
 #'    \code{\link[rgl]{rgl.material}}).
 #'
-#' @seealso \code{\link{stars3d_group}}, \code{\link{rgl_init}},
+#' @seealso \code{\link{stars3d}}, \code{\link{rgl_init}},
 #'    \code{\link[rgl]{spheres3d}}, \code{\link[rgl]{segments3d}},
 #'    \code{\link[rgl]{texts3d}}
 #'
@@ -480,14 +491,14 @@ stars3d_group <-
 #' points3d(setosa[, 1], setosa[, 2], setosa[, 3], color = "black")
 #'
 #' # Add star
-#' stars3d(setosa[, 1], setosa[, 2], setosa[, 3], label = "setosa",
+#' star3d(setosa[, 1], setosa[, 2], setosa[, 3], label = "setosa",
 #'        centroid_color = "green", link_color = "red", label_color = "blue")
 #'
 #' remove(setosa)
 #'
 #' }
 #'
-stars3d <- function(x, y, z,
+star3d <- function(x, y, z,
                    color = "black",
                    label = "",
                    centroid_color = NULL,

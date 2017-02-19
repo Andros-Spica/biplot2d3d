@@ -5,8 +5,8 @@
 #'
 #' @param new_device If there is a rgl device open, should yet another be opened?
 #' @param bg_color The background color (\code{\link[rgl]{bg3d}}).
-#' @param view_theta,view_phi,view_zoom The theta and phi angles
-#'    (polar coordinates)
+#' @param view_theta,view_phi,view_fov,view_zoom The theta and phi angles
+#'    (polar coordinates), the field-of-view angle,
 #'    and the zoom level of the viewpoint (\code{\link[rgl]{view3d}}).
 #' @param width,height The width and height of the rgl device window in pixels
 #'    (\code{\link[rgl]{par3d}}).
@@ -22,31 +22,43 @@
 #'
 #' @examples
 #'
+#' \dontrun{
+#'
 #' rgl_init()
 #' rgl_init(bg = "black")
 #' rgl_init(width = 400, height = 300)
 #'
+#' }
+#'
 rgl_init <- function(new_device = FALSE,
-                     bg = "white",
-                     theta = 15,
-                     phi = 20,
-                     fov = 60,
-                     zoom = 0.8,
+                     bg_color = "white",
+                     view_theta = 15,
+                     view_phi = 20,
+                     view_fov = 60,
+                     view_zoom = 0.8,
                      width = 800,
                      height = 600) {
+
   if (!new_device & rgl::rgl.cur() != 0) {
+
     rgl::rgl.close()
+
   }
+
   rgl::rgl.open()# Open a new RGL device
+
   rgl::par3d(windowRect = 50 + c(0, 0, width, height))
-  rgl::bg3d(color = bg)# Setup the background color
+
+  rgl::bg3d(color = bg_color)# Setup the background color
+
   rgl::rgl.clear(type = c("shapes", "bboxdeco"))
-  rgl::view3d(
-    theta = theta,
-    phi = phi,
-    fov = fov,
-    zoom = zoom
+
+  rgl::view3d(theta = view_theta,
+              phi = view_phi,
+              fov = view_fov,
+              zoom = view_zoom
   )
+
 }
 
 # Description of the used RGL functions:
@@ -71,6 +83,7 @@ rgl_init <- function(new_device = FALSE,
 #' @param x,y,z The numeric vectors corresponding to the 3D coordinates of
 #'    points.
 #' @param axes_colors The axes colors.
+#' @param axes_head_size The size of the head (end point) of the axes.
 #' @param axes_titles The axes titles.
 #' @param axes_titles_cex,axes_titles_font,axes_titles_family,axes_titles_adj,axes_titles_alpha The text parameters and the alpha of the titles
 #'    (\code{\link[rgl]{text3d}}). \code{axes_title_adj} accepts a single
@@ -81,7 +94,7 @@ rgl_init <- function(new_device = FALSE,
 #'    dimension, to be past to \code{\link[rgl]{aspect3d}}.
 #'    By default, aspect is balanced (i.e. c(1, 1, 1)).
 #'    If equals NULL, the "true" aspect is calculated
-#'    with \code{\link{calc_aspect}}.
+#'    with \code{\link{calculate_aspect}}.
 #' @param symmetric_axes Logical, whether the axes should
 #'    be drawn symmetrically.
 #' @param adapt_axes_origin Logical, whether to adapt the axes origin.
@@ -103,7 +116,7 @@ rgl_init <- function(new_device = FALSE,
 #'   available in sthda.com Web site and last accessed in may 24 2016
 #'   (\url{http://www.sthda.com/english/wiki/a-complete-guide-to-3d-visualization-device-system-in-r-r-software-and-data-visualization})
 #'
-#' @seealso \code{\link{calc_aspect}}, \code{\link{rgl_init}},
+#' @seealso \code{\link{calculate_aspect}}, \code{\link{rgl_init}},
 #'    \code{\link[rgl]{aspect3d}}, \code{\link[rgl]{axis3d}},
 #'    \code{\link[rgl]{bbox3d}}
 #'
@@ -198,7 +211,7 @@ rgl_format <- function(x, y, z,
     origin <- c(xlim[1], ylim[1], zlim[1])
   }
 
-  if (is.null(aspect)) { aspect <- calc_aspect(x, y, z)}
+  if (is.null(aspect)) { aspect <- calculate_aspect(x, y, z)}
   rgl::aspect3d(aspect[1], aspect[2], aspect[3])
 
   if (!is.null(show_axes)) {
@@ -388,23 +401,38 @@ rgl_format <- function(x, y, z,
 #' @return Returns a vector with three numerical values equal or greater than 1.
 #'
 #' @examples
-#' calc_aspect(0:100, 0:50, 0:10)
 #'
-calc_aspect <- function(x, y, z){
+#' \dontrun{
+#'
+#' calculate_aspect(0:100, 0:50, 0:10)
+#'
+#' }
+#'
+calculate_aspect <- function(x, y, z) {
+
   range_x <- max(x) - min(x)
   range_y <- max(y) - min(y)
   range_z <- max(z) - min(z)
   ranges <- c(range_x, range_y, range_z)
+
   aspect <- c(1, 1, 1)
-  if (range_x == min(ranges)){
-    aspect[2]<- range_y / range_x
-    aspect[3]<- range_z / range_x
-  } else if (range_y == min(ranges)){
-    aspect[1]<- range_x / range_y
-    aspect[3]<- range_z / range_y
+
+  if (range_x == min(ranges)) {
+
+    aspect[2] <- range_y / range_x
+    aspect[3] <- range_z / range_x
+
+  } else if (range_y == min(ranges)) {
+
+    aspect[1] <- range_x / range_y
+    aspect[3] <- range_z / range_y
+
   } else {
-    aspect[1]<- range_x / range_z
-    aspect[2]<- range_y / range_z
+
+    aspect[1] <- range_x / range_z
+    aspect[2] <- range_y / range_z
+
   }
+
   return(aspect)
 }
