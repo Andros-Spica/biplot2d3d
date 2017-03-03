@@ -1,5 +1,4 @@
-
-
+#' @export get_lambda
 get_lambda <- function(sdev,
                        n.obs,
                        dimensions = 1:2,

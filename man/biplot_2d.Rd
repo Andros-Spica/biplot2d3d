@@ -8,10 +8,10 @@ biplot_2d(ordination_object, ordination_method = "PCA",
   biplot_type = "default", rows_over_columns = 0.5, groups = NULL,
   vips = NULL, detach_arrows = TRUE, show_grid = TRUE, show_axes = TRUE,
   show_group_legend = FALSE, show_vip_legend = TRUE, show_arrows = TRUE,
-  show_fitAnalysis = TRUE, grid_cex = 1, grid_font = 3, grid_adj = 0.5,
-  invert_coordinates = c(FALSE, FALSE), xlim = NULL, ylim = NULL,
-  x_title = "", y_title = "", x_title_cex = 1, x_title_font = 2,
-  y_title_cex = 1, y_title_font = 2, subtitle = NULL,
+  show_fitAnalysis = TRUE, main_lwd = 2, grid_cex = 1, grid_font = 3,
+  grid_adj = 0.5, invert_coordinates = c(FALSE, FALSE), xlim = NULL,
+  ylim = NULL, x_title = "", y_title = "", x_title_cex = 1,
+  x_title_font = 2, y_title_cex = 1, y_title_font = 2, subtitle = NULL,
   subtitle_position = "bottomleft", subtitle_cex = 1,
   point_type = "point", point_pch = 1, point_size = 1,
   point_label = NULL, point_label_cex = 1, point_label_font = 3,
@@ -115,6 +115,9 @@ covariance arrows.}
 fit analysis plot corresponding to the ordination method
 given (Scree plot or Shepard plot).}
 
+\item{main_lwd}{The line width to be used in the main plot.
+(\code{lwd} in (\code{\link[graphics]{par}}).}
+
 \item{grid_cex, grid_font, grid_adj}{The scale, font type,
 and text justification of the grid notation.}
 
@@ -138,8 +141,9 @@ of the y axis or vertical title (\code{\link[graphics]{par}}).}
 \item{subtitle}{Character, a subtitle to be displayed
 in the bottom-left corner of the plot
 (\code{csub} in \code{\link[ade4]{s.class}}).
-If equals NULL, a default subtitle is displayed present the
-R-Squared of the 2D fit respect to the original distances.}
+If equals NULL and \code{ordination_method = "PCA"},
+a default subtitle is the R-Squared of the 2D fit
+respect to the original distances.}
 
 \item{subtitle_position}{Character, value indicating the
 position of the subtitle in the main plot ("topleft",

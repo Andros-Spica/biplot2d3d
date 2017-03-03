@@ -1,3 +1,4 @@
+#' @export filter_arrows
 filter_arrows <- function(loadings, mim_arrow_dist = 0.5, dimensions = 2){
 
   filtered_arrows <- loadings[, 1:dimensions]

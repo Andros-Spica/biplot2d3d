@@ -6,9 +6,9 @@
 \usage{
 biplot_3d(ordination_object, ordination_method = "PCA",
   biplot_type = "default", rows_over_columns = 0.5, groups = NULL,
-  vips = NULL, show_group_legend = FALSE, show_vip_legend = TRUE,
-  show_arrows = TRUE, show_fitAnalysis = TRUE, show_axes = c("X", "Y",
-  "Z"), show_planes = NULL, show_bbox = FALSE,
+  vips = NULL, detach_arrows = TRUE, show_group_legend = FALSE,
+  show_vip_legend = FALSE, show_arrows = TRUE, show_fitAnalysis = TRUE,
+  show_axes = c("X", "Y", "Z"), show_planes = NULL, show_bbox = FALSE,
   invert_coordinates = c(FALSE, FALSE, FALSE), aspect = c(1, 1, 1),
   symmetric_axes = FALSE, adapt_axes_origin = TRUE,
   axes_colors = "darkgrey", axes_head_size = 3, axes_titles = "",
@@ -113,6 +113,10 @@ assignation of each point.}
 the "Very Important Points" under different methods
 or criteria.}
 
+\item{detach_arrows}{Logical, wheter to display covariance arrows
+a independent miniature plot, overlapping the main plot and
+placed according to \code{arrow_fig}.}
+
 \item{show_group_legend}{Logical, whether to display a
 legend for groups?}
 
@@ -197,10 +201,10 @@ representation to draw: "stars", "ellipsoids", or
 are drawn, if NULL is given instead.}
 
 \item{ellipsoid_type, ellipsoid_level, ellipsoid_singleton_color, ellipsoid_singleton_radius, ellipsoid_wire_alpha, ellipsoid_wire_lit, ellipsoid_shade_alpha, ellipsoid_shade_lit, ellipsoid_label_cex, ellipsoid_label_font, ellipsoid_label_adj, ellipsoid_label_alpha}{When ellipsoids are drawn, parameters given to
-\code{\link{ellipsoids3d}}.}
+\code{\link{ellipsoids_3d}}.}
 
 \item{star_centroid_radius, star_centroid_alpha, star_link_width, star_link_alpha, star_label_cex, star_label_font, star_label_adj, star_label_alpha}{When stars are drawn, parameters given to
-\code{\link{stars3d}}.}
+\code{\link{stars_3d}}.}
 
 \item{group_legend_title}{Character, the title of the groups
 legend. If equal NULL or "", no title is displayed.}
@@ -324,8 +328,8 @@ are several types of biplot transformations,
 it is possible to use 'scores' and 'loadings' that were
 already transformed, passing \code{biplot_type = NULL}.
 Groups can be represented as stars
-(\code{\link{stars3d}}), ellipsoids
-(\code{\link{ellipsoids3d}}), and/or colors,
+(\code{\link{stars_3d}}), ellipsoids
+(\code{\link{ellipsoids_3d}}), and/or colors,
 which can be tracked by a fully-customisable legend
 (\code{group_legend} arguments). Individual observations
 deemed exceptional (vip = Very Important Points) can be

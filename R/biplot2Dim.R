@@ -60,6 +60,8 @@
 #'    fit analysis plot corresponding to the ordination method
 #'    given (Scree plot or Shepard plot).
 #'
+#' @param main_lwd The line width to be used in the main plot.
+#'    (\code{lwd} in (\code{\link[graphics]{par}}).
 #' @param grid_cex,grid_font,grid_adj The scale, font type,
 #'    and text justification of the grid notation.
 #' @param invert_coordinates Logical, vector of length two
@@ -77,8 +79,9 @@
 #' @param subtitle Character, a subtitle to be displayed
 #'    in the bottom-left corner of the plot
 #'    (\code{csub} in \code{\link[ade4]{s.class}}).
-#'    If equals NULL, a default subtitle is displayed present the
-#'    R-Squared of the 2D fit respect to the original distances.
+#'    If equals NULL and \code{ordination_method = "PCA"},
+#'    a default subtitle is the R-Squared of the 2D fit
+#'    respect to the original distances.
 #' @param subtitle_position Character, value indicating the
 #'    position of the subtitle in the main plot ("topleft",
 #'    "topright", "bottomleft", and "bottomright"; see
@@ -444,6 +447,8 @@
 #'
 #'}
 #'
+#' @export biplot_2d
+#'
 biplot_2d <-
   function(ordination_object,
            ordination_method = "PCA",
@@ -460,6 +465,7 @@ biplot_2d <-
            show_arrows = TRUE,
            show_fitAnalysis = TRUE,
 
+           main_lwd = 2,
            grid_cex = 1,
            grid_font = 3,
            grid_adj = 0.5,
@@ -575,6 +581,19 @@ biplot_2d <-
 
     # Select data depending on the ordination method
 
+    # Not an ordination object ------------------------------------
+    # If there is no ordination method,
+    # ordination_object is interpreted as a data frame.
+    if (is.null(ordination_method)) {
+
+      warning("ordination_method = NULL, so the ordination_object
+              is interpreted as a data frame.\nNo covariance arrows
+              or fit analysis will be displayed.", call = FALSE)
+      scores <- ordination_object
+      show_arrows = FALSE
+      show_fitAnalysis = FALSE
+
+    } else
     # Principal Components Analysis --------------------------------
     if (ordination_method == "PCA") {
 
@@ -608,8 +627,8 @@ biplot_2d <-
 
       if (biplot_type == "default" || biplot_type == "pc.biplot") {
 
-        scores <- t(t(scores)/lambda)
-        loadings <- t(t(loadings) * lambda)
+        scores <- t(t(scores[, 1:2])/lambda)
+        loadings <- t(t(loadings[, 1:2]) * lambda)
 
       } else {
 
@@ -666,22 +685,9 @@ biplot_2d <-
       eigenvalues <- (eigenvalues / sum(eigenvalues)) * 100
 
     } else
-    # Not an ordination object ------------------------------------
-    # If there is no ordination method,
-    # ordination_object is interpreted as a data frame.
-    if (is.null(ordination_method)) {
-
-      warning("ordination_method = NULL, so the ordination_object
-              is interpreted as a data frame.\nNo covariance arrows
-              or fit analysis will be displayed.", call = FALSE)
-      scores <- ordination_object
-      show_arrows = FALSE
-      show_fitAnalysis = FALSE
-
-    }
     # Method not supported ----------------------------------------
     # If the method given is not supported
-    else {
+    {
 
       stop(paste("The method '", ordination_method, "' is not
                  supported or not properly written.\nPlease pass
@@ -728,21 +734,20 @@ biplot_2d <-
     if (is.null(subtitle)) {
 
       # If no subtitle is given
-      if (is.null(ordination_method)) {
+      if (ordination_method != "PCA") {
 
-        # If there is no subtitle specified,
+        # If the method is not a PCA,
         # no subtitle is displayed
+        # TODO: useful default subtitle for other methos
         sub <- ""
 
       } else {
 
-        # If there is an ordination method,
+        # If the method is a PCA,
         # the percentage of variance represented is displayed
         cumVar <- cumsum((sdev) ^ 2) / sum(sdev ^ 2)
-        sub <-
-          paste(as.character(100 * round(cumVar[2], digits = 4)),
-                "% of variance explained",
-                sep = "")
+        R2 <- as.character(100 * round(cumVar[2], digits = 4))
+         sub <- paste(R2, "% of variance explained", sep = "")
 
       }
     }
@@ -1006,6 +1011,7 @@ biplot_2d <-
           font = grid_font,
           family = family,
           adj = grid_adj,
+          lwd = main_lwd,
           fig = main_fig)
 
       # Create main plot ------------------------------------------
@@ -1429,7 +1435,7 @@ biplot_2d <-
            cex = y_title_cex,
            font = y_title_font,
            pos = 3,
-           srt = 90,
+           srt = 270,
            family = family)
 
       #par(fig = c(0, 1, 0, 1))

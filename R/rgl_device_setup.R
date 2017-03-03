@@ -30,6 +30,8 @@
 #'
 #' }
 #'
+#' @export rgl_init
+#'
 rgl_init <- function(new_device = FALSE,
                      bg_color = "white",
                      view_theta = 15,
@@ -147,6 +149,8 @@ rgl_init <- function(new_device = FALSE,
 #'          iris[iris$Species == "virginica", 2],
 #'          iris[iris$Species == "virginica", 3], color = "blue")
 #' }
+#'
+#' @export rgl_format
 #'
 rgl_format <- function(x, y, z,
                        aspect = c(1, 1, 1),
@@ -407,6 +411,8 @@ rgl_format <- function(x, y, z,
 #' calculate_aspect(0:100, 0:50, 0:10)
 #'
 #' }
+#'
+#' @export calculate_aspect
 #'
 calculate_aspect <- function(x, y, z) {
 

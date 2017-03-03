@@ -66,6 +66,8 @@
 #'
 #' }
 #'
+#' @export scale_to_main
+#'
 scale_to_main <- function(element_fig, main_fig) {
 
   x_range <- main_fig[2] - main_fig[1]

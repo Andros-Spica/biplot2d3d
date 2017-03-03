@@ -45,6 +45,9 @@
 #'    the "Very Important Points" under different methods
 #'    or criteria.
 #'
+#' @param detach_arrows Logical, wheter to display covariance arrows
+#'    a independent miniature plot, overlapping the main plot and
+#'    placed according to \code{arrow_fig}.
 #' @param show_group_legend Logical, whether to display a
 #'    legend for groups?
 #' @param show_vip_legend Logical, whether to display a
@@ -114,10 +117,10 @@
 #'    are drawn, if NULL is given instead.
 #' @param ellipsoid_type,ellipsoid_level,ellipsoid_singleton_color,ellipsoid_singleton_radius,ellipsoid_wire_alpha,ellipsoid_wire_lit,ellipsoid_shade_alpha,ellipsoid_shade_lit,ellipsoid_label_cex,ellipsoid_label_font,ellipsoid_label_adj,ellipsoid_label_alpha
 #'    When ellipsoids are drawn, parameters given to
-#'    \code{\link{ellipsoids3d}}.
+#'    \code{\link{ellipsoids_3d}}.
 #' @param star_centroid_radius,star_centroid_alpha,star_link_width,star_link_alpha,star_label_cex,star_label_font,star_label_adj,star_label_alpha
 #'    When stars are drawn, parameters given to
-#'    \code{\link{stars3d}}.
+#'    \code{\link{stars_3d}}.
 #' @param group_legend_title Character, the title of the groups
 #'    legend. If equal NULL or "", no title is displayed.
 #' @param group_legend_title_pos A numeric vector of length
@@ -219,8 +222,8 @@
 #' it is possible to use 'scores' and 'loadings' that were
 #' already transformed, passing \code{biplot_type = NULL}.
 #' Groups can be represented as stars
-#' (\code{\link{stars3d}}), ellipsoids
-#' (\code{\link{ellipsoids3d}}), and/or colors,
+#' (\code{\link{stars_3d}}), ellipsoids
+#' (\code{\link{ellipsoids_3d}}), and/or colors,
 #' which can be tracked by a fully-customisable legend
 #' (\code{group_legend} arguments). Individual observations
 #' deemed exceptional (vip = Very Important Points) can be
@@ -368,6 +371,8 @@
 #'
 #'}
 #'
+#' @export biplot_3d
+#'
 biplot_3d <-
   function(ordination_object,
            ordination_method = "PCA",
@@ -376,8 +381,9 @@ biplot_3d <-
            groups = NULL,
            vips = NULL,
 
+           detach_arrows = TRUE,
            show_group_legend = FALSE,
-           show_vip_legend = TRUE,
+           show_vip_legend = FALSE,
            show_arrows = TRUE,
            show_fitAnalysis = TRUE,
 
@@ -550,6 +556,19 @@ biplot_3d <-
 
     # Select data depending on the ordination method
 
+    # Not an ordination object -------------------------------------
+    # If there is no ordination method,
+    # ordination_object is interpreted as a data frame.
+    if (is.null(ordination_method)) {
+
+      warning("ordination_method = NULL, so the ordination_object is interpreted as a data frame.\nNo covariance arrows or fit analysis will be displayed.",
+              call = FALSE)
+
+      scores <- ordination_object
+      show_arrows = FALSE
+      show_fitAnalysis = FALSE
+
+    } else
     # Principal Components Analysis --------------------------------
     if (ordination_method == "PCA") {
 
@@ -577,14 +596,14 @@ biplot_3d <-
 
       lambda <- get_lambda(sdev,
                            n.obs = nrow(scores),
-                           dimensions = 1:2,
+                           dimensions = 1:3,
                            scale = rows_over_columns,
                            pc.biplot = isPCbiplot)
 
       if (biplot_type == "default" || biplot_type == "pc.biplot") {
 
-        scores <- t(t(scores)/lambda)
-        loadings <- t(t(loadings) * lambda)
+        scores <- t(t(scores[, 1:3])/lambda)
+        loadings <- t(t(loadings[, 1:3]) * lambda)
 
       } else {
 
@@ -639,22 +658,9 @@ biplot_3d <-
       eigenvalues <- (eigenvalues / sum(eigenvalues)) * 100
 
     } else
-      # Not an ordination object -------------------------------------
-    # If there is no ordination method,
-    # ordination_object is interpreted as a data frame.
-    if (is.null(ordination_method)) {
-
-      warning("ordination_method = NULL, so the ordination_object is interpreted as a data frame.\nNo covariance arrows or fit analysis will be displayed.",
-              call = FALSE)
-
-      scores <- ordination_object
-      show_arrows = FALSE
-      show_fitAnalysis = FALSE
-
-    }
-    # Method not supported -----------------------------------------
+      # Method not supported -----------------------------------------
     # If the method given is not supported
-    else {
+    {
 
       stop(paste("The method '", ordination_method, "' is not supported or not properly written.\nPlease pass either 'PCA', 'PCoA', 'NMDS', or 'LDA' as the ordination_method argument.", sep = ""),
            call. = FALSE)
@@ -906,7 +912,7 @@ biplot_3d <-
 
       # Create the legend for the vips ----------------------------
 
-      if (show_vip_legend & !is.null(vips)) {
+      if (!is.null(vips) & show_vip_legend) {
 
         firstLine <- 1
 
@@ -1090,8 +1096,12 @@ biplot_3d <-
         point_type == "point and label" ||
         !is.null(point_label)) {
 
+      labels_ <- point_label
+      # if there are no labels given, take the row names
+      if (is.null(labels_)) labels_ <- row.names(scores)
+
       rgl::text3d(x = x, y = y, z = z,
-                  texts = point_label,
+                  texts = labels_,
                   col = get_colors(groups_, group_color_),
                   cex = point_label_cex,
                   family = family,
@@ -1195,7 +1205,7 @@ biplot_3d <-
           group_representation == "stars and ellipsoids") {
 
         # Compute and draw the ellipsoids of concentration
-        ellipsoids3d(x = x, y = y, z = z,
+        ellipsoids_3d(x = x, y = y, z = z,
                            groups = groups_,
                            group_color = group_color_,
                            type = ellipsoid_type,
@@ -1218,7 +1228,7 @@ biplot_3d <-
           group_representation == "stars and ellipsoids") {
 
         # Star grouping
-        stars3d(x = x, y = y, z = z,
+        stars_3d(x = x, y = y, z = z,
                       groups = groups_,
                       group_color = group_color_,
                       centroid_radius = star_centroid_radius,
@@ -1237,10 +1247,16 @@ biplot_3d <-
     # insert the miniature of variables covariances (arrows) ------
     if (show_arrows) {
 
-      # get a position for arrows center
-      arrow_center_pos_x = min(x) + (max(x) - min(x)) * arrow_center_pos[1]
-      arrow_center_pos_y = min(y) + (max(y) - min(y)) * arrow_center_pos[2]
-      arrow_center_pos_z = min(z) + (max(z) - min(z)) * arrow_center_pos[3]
+      arrow_center_pos_x <- 0
+      arrow_center_pos_x <- 0
+      arrow_center_pos_x <- 0
+
+      if (detach_arrows) {
+        # get a position for arrows center from the given relative position
+        arrow_center_pos_x <- min(x) + (max(x) - min(x)) * arrow_center_pos[1]
+        arrow_center_pos_y <- min(y) + (max(y) - min(y)) * arrow_center_pos[2]
+        arrow_center_pos_z <- min(z) + (max(z) - min(z)) * arrow_center_pos[3]
+      }
 
       # filter arrows
       loadings <- filter_arrows(loadings = loadings,
@@ -1301,6 +1317,9 @@ get_colors <- function(groups, color_palette = palette()) {
 #' @param file_name The name of the output file.
 #' @param axis_spin a numeric vector of lenght 3 indicating around which axis should the plot spin. See \code{\link[rgl]{movie3d}}.
 #' @param axis_spin_rpm the velocity of the spin. See \code{\link[rgl]{movie3d}}.
+#'
+#' @export animation
+#'
 animation <- function(directory = "",
                       file_name = "animation",
                       axis_spin = c(0, 1, 0),

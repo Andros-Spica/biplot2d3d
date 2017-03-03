@@ -64,6 +64,8 @@
 #'
 #'}
 #'
+#' @export covArrows3D
+#'
 covArrows3D <-
   function(x, y, z,
            variable_names = names(x),
