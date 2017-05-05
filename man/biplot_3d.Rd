@@ -265,7 +265,7 @@ entries in the vips legend box. Values from 0 to 1.}
 text parameters of the text entries in the vips legend.}
 
 \item{arrow_color}{The color or colors to be used in
-covariance arrows (pass to \code{\link{covArrows3D}}).}
+covariance arrows (pass to \code{\link{radial_arrows_3d}}).}
 
 \item{arrow_mim_dist}{The minimum distance of a variable
 arrow from the origin of arrows, in order for it to be
@@ -278,7 +278,7 @@ arrows, expressed in relation to the 3D space represented
 (e.g. c(.5, .5, .5) will place the arrows in the center).}
 
 \item{arrow_head_shape_theta, arrow_head_shape_n, arrow_head_size, arrow_body_width, arrow_body_length, arrow_label_color, arrow_label_cex, arrow_label_font, arrow_label_adj, arrow_label_alpha}{When the covariance arrows are displayed, parameters
-given to \code{\link{covArrows3D}}.}
+given to \code{\link{radial_arrows_3d}}.}
 
 \item{fitAnalysis_cex, fitAnalysis_lwd, fitAnalysis_screePlot_color, fitAnalysis_stress_p_color, fitAnalysis_stress_l_color}{The graphical parameters of the plot for fit analysis
 of the ordination method

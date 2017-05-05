@@ -168,8 +168,8 @@
 #'    text parameters of the text entries in the vips legend.
 #'
 #' @param arrow_color The color or colors to be used in
-#'    covariance arrows (pass to \code{\link{covArrows3D}}).
-#' @param arrow_mim_dist The minimum distance of a variable
+#'    covariance arrows (pass to \code{\link{radial_arrows_3d}}).
+#' @param arrow_min_dist The minimum distance of a variable
 #'    arrow from the origin of arrows, in order for it to be
 #'    displayed (range [0 = all arrows are displayed,
 #'    1 = no arrows are displayed]).
@@ -179,7 +179,7 @@
 #'    (e.g. c(.5, .5, .5) will place the arrows in the center).
 #' @param arrow_head_shape_theta,arrow_head_shape_n,arrow_head_size,arrow_body_width,arrow_body_length,arrow_label_color,arrow_label_cex,arrow_label_font,arrow_label_adj,arrow_label_alpha
 #'    When the covariance arrows are displayed, parameters
-#'    given to \code{\link{covArrows3D}}.
+#'    given to \code{\link{radial_arrows_3d}}.
 #'
 #' @param fitAnalysis_cex,fitAnalysis_lwd,fitAnalysis_screePlot_color,fitAnalysis_stress_p_color,fitAnalysis_stress_l_color
 #'    The graphical parameters of the plot for fit analysis
@@ -507,7 +507,7 @@ biplot_3d <-
            vip_legend_text_adj = 0,
 
            arrow_color = "darkorange",
-           arrow_mim_dist = 0,
+           arrow_min_dist = 0,
            arrow_center_pos = c(1, 0, 1),
            arrow_head_shape_theta = pi / 6,
            arrow_head_shape_n = 3,
@@ -545,8 +545,6 @@ biplot_3d <-
            width = 800,
            height = 600,
            family = "sans") {
-
-    #NOTE: biplots2d3d::filter_arrows
 
     # Load data ===================================================
     scores <- NULL
@@ -1260,28 +1258,31 @@ biplot_3d <-
 
       # filter arrows
       loadings <- filter_arrows(loadings = loadings,
-                                mim_arrow_dist = arrow_mim_dist,
+                                min_dist = arrow_min_dist,
                                 dimensions = 3)
 
-      covArrows3D(x = loadings[, 1],
-                  y = loadings[, 2],
-                  z = loadings[, 3],
-                  center_pos = c(arrow_center_pos_x,
-                                 arrow_center_pos_y,
-                                 arrow_center_pos_z),
-                  head_shape_theta = arrow_head_shape_theta,
-                  head_shape_n = arrow_head_shape_n,
-                  head_size = arrow_head_size,
-                  body_length = arrow_body_length,
-                  body_width = arrow_body_width,
-                  color = arrow_color,
-                  label_color = arrow_label_color,
-                  label_cex = arrow_label_cex,
-                  label_family = family,
-                  label_font = arrow_label_font,
-                  label_adj = arrow_label_adj,
-                  label_alpha = arrow_label_alpha)
+      if (nrow(loadings) > 0) {
 
+        radial_arrows_3d(x = loadings[, 1],
+                         y = loadings[, 2],
+                         z = loadings[, 3],
+                         center_pos = c(arrow_center_pos_x,
+                                        arrow_center_pos_y,
+                                        arrow_center_pos_z),
+                         head_shape_theta = arrow_head_shape_theta,
+                         head_shape_n = arrow_head_shape_n,
+                         head_size = arrow_head_size,
+                         body_length = arrow_body_length,
+                         body_width = arrow_body_width,
+                         color = arrow_color,
+                         label_color = arrow_label_color,
+                         label_cex = arrow_label_cex,
+                         label_family = family,
+                         label_font = arrow_label_font,
+                         label_adj = arrow_label_adj,
+                         label_alpha = arrow_label_alpha)
+
+      }
     }
 
   }
@@ -1325,8 +1326,12 @@ animation <- function(directory = "",
                       axis_spin = c(0, 1, 0),
                       axis_spin_rpm = 5){
 
+  if (directory == "") directory <- tempdir()
+
   # snapshot
-  rgl::rgl.snapshot(filename = paste(directory, paste(file_name,"_snapshot.png", sep=""), sep="/"))
+  rgl::rgl.snapshot(filename = paste(directory,
+                                     paste(file_name,"_snapshot.png", sep=""),
+                                     sep="/"))
 
   # Create a movie
   rgl::movie3d(rgl::spin3d(axis = axis_spin,

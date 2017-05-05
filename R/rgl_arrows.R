@@ -57,16 +57,16 @@
 #'          color = "blue")
 #'
 #' # Add covariance arrows
-#' covArrows3D(x = pca$loadings[,1],
-#'             y = pca$loadings[,2],
-#'             z = pca$loadings[,3],
-#'             body_width = 5)
+#' radial_arrows_3d(x = pca$loadings[,1],
+#'                  y = pca$loadings[,2],
+#'                  z = pca$loadings[,3],
+#'                  body_width = 5)
 #'
 #'}
 #'
-#' @export covArrows3D
+#' @export radial_arrows_3d
 #'
-covArrows3D <-
+radial_arrows_3d <-
   function(x, y, z,
            variable_names = names(x),
            center_pos = c(0, 0, 0),
