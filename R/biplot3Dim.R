@@ -594,7 +594,7 @@ biplot_3d <-
 
       lambda <- get_lambda(sdev,
                            n.obs = nrow(scores),
-                           dimensions = 1:3,
+                           dimensions = 3,
                            scale = rows_over_columns,
                            pc.biplot = isPCbiplot)
 

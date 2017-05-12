@@ -621,7 +621,7 @@ biplot_2d <-
 
       lambda <- get_lambda(sdev,
                            n.obs = nrow(scores),
-                           dimensions = 1:2,
+                           dimensions = 2,
                            scale = rows_over_columns,
                            pc.biplot = isPCbiplot)
 
@@ -903,7 +903,7 @@ biplot_2d <-
 
       # filter variables to display
       loadings <- filter_arrows(loadings,
-                                mim_arrow_dist = arrow_mim_dist,
+                                min_dist = arrow_mim_dist,
                                 dimensions = 2)
 
       # position of labels of arrows

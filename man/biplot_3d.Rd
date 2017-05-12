@@ -55,7 +55,7 @@ biplot_3d(ordination_object, ordination_method = "PCA",
   vip_legend_box_color = "white", vip_legend_key_margin = 0.15,
   vip_legend_key_cexFactor = 0.8, vip_legend_text_margin = 0.25,
   vip_legend_text_cex = 1, vip_legend_text_font = 1,
-  vip_legend_text_adj = 0, arrow_color = "darkorange", arrow_mim_dist = 0,
+  vip_legend_text_adj = 0, arrow_color = "darkorange", arrow_min_dist = 0,
   arrow_center_pos = c(1, 0, 1), arrow_head_shape_theta = pi/6,
   arrow_head_shape_n = 3, arrow_head_size = 0.1, arrow_body_length = 0.2,
   arrow_body_width = 1, arrow_label_color = "black",
@@ -267,7 +267,7 @@ text parameters of the text entries in the vips legend.}
 \item{arrow_color}{The color or colors to be used in
 covariance arrows (pass to \code{\link{radial_arrows_3d}}).}
 
-\item{arrow_mim_dist}{The minimum distance of a variable
+\item{arrow_min_dist}{The minimum distance of a variable
 arrow from the origin of arrows, in order for it to be
 displayed (range [0 = all arrows are displayed,
 1 = no arrows are displayed]).}

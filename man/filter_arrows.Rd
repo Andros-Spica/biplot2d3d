@@ -4,16 +4,16 @@
 \alias{filter_arrows}
 \title{Filter covariance arrows for biplots}
 \usage{
-filter_arrows(loadings, mim_arrow_dist = 0.5, dimensions = 2)
+filter_arrows(loadings, min_dist = 0.5, dimensions = 2)
 }
 \arguments{
 \item{loadings}{Data frame, loadings or the covariances
 between variables and the coordinates calculated.}
 
-\item{dimensions}{Numeric, the number of dimensions where arrows will be projected.}
+\item{min_dist}{Numeric, ratio representing the minimun distante
+of arrow's points to their origin. 1 return no variables.}
 
-\item{min_arrow_dist}{Numeric, ratio representing the minimun distante
-of arrow's points to their origin. 0 return no variables.}
+\item{dimensions}{Numeric, the number of dimensions where arrows will be projected.}
 }
 \description{
 Filter the variables most represented in the firsts dimensions of an ordination object.
