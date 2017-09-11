@@ -112,6 +112,26 @@
 #'    The rows must be named exactly as points
 #'    are referred in the ordination object.
 #'
+#' @param arrow_color The color or colors to be used in
+#'    covariance arrows.
+#' @param arrow_mim_dist Numeric, the minimum distance of a arrow
+#'    from the origin of arrows (i.e. zero covariance),
+#'    in order for it to be displayed (range [0 = all arrows
+#'    are displayed,1 = no arrow is displayed]).
+#' @param arrow_length Numeric, the scalar factor applied to loadings
+#'    to resize them respect to scores. If \code{detach_arrows = TRUE},
+#'    resizing is controlled with \code{arrow_fig}, so  this value is ignored.
+#' @param arrow_cex,arrow_lwd,arrow_label_cex,arrow_label_color,arrow_label_font,arrow_label_adj
+#'    Graphical parameters of the covariance arrows and their
+#'    labels (see \code{\link[graphics]{arrows}} and
+#'    \code{\link[graphics]{par}}). \code{arrow_cex} is actually
+#'    equivalent to \code{length} in \code{\link[graphics]{arrows}}.
+#' @param arrow_label_adj_override A data frame with x,y values
+#'    to be passed to \code{adj}, overrinding the default
+#'    value given in \code{arrow_label_adj}. The rows must
+#'    be named exactly as variables are referred in the
+#'    ordination object.
+#'
 #' @param group_color A vector containing the colors to
 #'    be used in each group (applied to points, labels,
 #'    stars and ellipses). If NULL, automatically assign
@@ -171,29 +191,9 @@
 #' @param vip_legend_text_margin Numeric, the x position of the
 #'    text entries in the vips legend box. Values from 0 to 1.
 #'
-#' @param arrow_color The color or colors to be used in
-#'    covariance arrows.
-#' @param arrow_mim_dist Numeric, the minimum distance of a arrow
-#'    from the origin of arrows (i.e. zero covariance),
-#'    in order for it to be displayed (range [0 = all arrows
-#'    are displayed,1 = no arrow is displayed]).
-#' @param arrow_length Numeric, the scalar factor applied to loadings
-#'    to resize them respect to scores. If \code{detach_arrows = TRUE},
-#'    resizing is controlled with \code{arrow_fig}, so  this value is ignored.
-#' @param arrow_cex,arrow_lwd,arrow_label_cex,arrow_label_color,arrow_label_font,arrow_label_adj
-#'    Graphical parameters of the covariance arrows and their
-#'    labels (see \code{\link[graphics]{arrows}} and
-#'    \code{\link[graphics]{par}}). \code{arrow_cex} is actually
-#'    equivalent to \code{length} in \code{\link[graphics]{arrows}}.
-#' @param arrow_label_adj_override A data frame with x,y values
-#'    to be passed to \code{adj}, overrinding the default
-#'    value given in \code{arrow_label_adj}. The rows must
-#'    be named exactly as variables are referred in the
-#'    ordination object.
-#'
-#' @param fitAnalysis_cex,fitAnalysis_lwd,fitAnalysis_screePlot_color,fitAnalysis_stress_p_color,fitAnalysis_stress_l_color
+#' @param fitAnalysis_lwd,fitAnalysis_screePlot_color,fitAnalysis_stress_cex,fitAnalysis_stress_lab_cex,fitAnalysis_stress_axis_cex,fitAnalysis_stress_p_color,fitAnalysis_stress_l_color
 #'    The graphical parameters of the plot for fit analysis
-#'    of the ordination method
+#'    correspondint to the ordination method (Scree plot for PCA, PCoA, LDA; Shepard or Stress plot for NMDS).
 #'    (\code{\link[graphics]{par}},
 #'    \code{\link[vegan]{stressplot}}
 #'    of the \code{vegan} package).
@@ -491,6 +491,17 @@ biplot_2d <-
            point_label_adj = c(0.5, 0.5),
            point_label_adj_override = NULL,
 
+           arrow_color = "darkorange",
+           arrow_mim_dist = 0,
+           arrow_length = 0.2,
+           arrow_cex = 0.1,
+           arrow_lwd = 2,
+           arrow_label_cex = 1,
+           arrow_label_color = "black",
+           arrow_label_font = 1,
+           arrow_label_adj = c(0.5, 0.5),
+           arrow_label_adj_override = NULL,
+
            group_color = "black",
            group_star_cex = 1,
            group_ellipse_cex = 1,
@@ -531,20 +542,11 @@ biplot_2d <-
            vip_legend_text_adj = 0,
            vip_legend_text_margin = 0.25,
 
-           arrow_color = "darkorange",
-           arrow_mim_dist = 0,
-           arrow_length = 0.2,
-           arrow_cex = 0.1,
-           arrow_lwd = 2,
-           arrow_label_cex = 1,
-           arrow_label_color = "black",
-           arrow_label_font = 1,
-           arrow_label_adj = c(0.5, 0.5),
-           arrow_label_adj_override = NULL,
-
-           fitAnalysis_cex = 1,
            fitAnalysis_lwd = 3,
-           fitAnalysis_screePlot_color = "white",
+           fitAnalysis_screePlot_color = c("grey","white"),
+           fitAnalysis_stress_cex = 1,
+           fitAnalysis_stress_lab_cex = 1,
+           fitAnalysis_stress_axis_cex = 1,
            fitAnalysis_stress_p_color = "darkgrey",
            fitAnalysis_stress_l_color = "black",
 
@@ -906,6 +908,14 @@ biplot_2d <-
                                 min_dist = arrow_mim_dist,
                                 dimensions = 2)
 
+      if (nrow(loadings) == 0) {
+
+        stop("arrow_mim_dist is too high (filter is too restrictive).\n
+               Please decrease arrow_mim_dist value or hide arrow plot (show_arrow = FALSE).",
+             call. = FALSE)
+
+      }
+
       # position of labels of arrows
       arrow_label_adj_ <-
         cbind(rep(arrow_label_adj[1], nrow(loadings)),
@@ -925,6 +935,23 @@ biplot_2d <-
       loadingsRange <- loadingsRange * arrow_length
 
       # color of arrows
+      arrow_color_ <- arrow_color
+      if (length(arrow_color) < nrow(loadings)) {
+
+        if (length(arrow_color) == 1) {
+
+          arrow_color_ <- rep(arrow_color, nrow(loadings))
+
+        } else {
+
+          stop("length(arrow_color) < number of variables.
+               Please specify colors for all groups or
+               choose a single color.",
+               call. = FALSE)
+
+        }
+      }
+
       arrow_label_color_ <- arrow_color
       if (!is.null(arrow_label_color)) {
         arrow_label_color_ <- arrow_label_color
@@ -1134,10 +1161,11 @@ biplot_2d <-
                xaxt = 'n',
                yaxt = 'n',
                ann = FALSE,
-               xlim = c(min(arrow_x) - 0.05 * loadingsRange,
-                        max(arrow_x) + 0.05 * loadingsRange),
-               ylim = c(min(arrow_y) - 0.05 * loadingsRange,
-                        max(arrow_y) + 0.05 * loadingsRange))
+               xlim = c(min(c(0, min(arrow_x) - 0.05 * loadingsRange)),
+                        max(c(0, max(arrow_x) + 0.05 * loadingsRange))),
+               ylim = c(min(c(0, min(arrow_y) - 0.05 * loadingsRange)),
+                        max(c(0, max(arrow_y) + 0.05 * loadingsRange)))
+               )
 
         } else {
 
@@ -1151,7 +1179,7 @@ biplot_2d <-
                arrow_x,
                arrow_y,
                length = arrow_cex,
-               col = arrow_color)
+               col = arrow_color_)
 
         # Draw arrows labels
         for (i in 1:nrow(loadings)){
@@ -1341,9 +1369,9 @@ biplot_2d <-
 
           vegan::stressplot(ordination_object,
                      p.col = fitAnalysis_stress_p_color,
-                     cex = fitAnalysis_cex,
-                     cex.lab = fitAnalysis_cex,
-                     cex.axis = fitAnalysis_cex,
+                     cex = fitAnalysis_stress_cex,
+                     cex.lab = fitAnalysis_stress_lab_cex,
+                     cex.axis = fitAnalysis_stress_axis_cex,
                      lwd = fitAnalysis_lwd,
                      l.col = fitAnalysis_stress_l_color)
 
@@ -1357,16 +1385,14 @@ biplot_2d <-
 
           barplot(eigenvalues,
                   space = 0,
-                  col = fitAnalysis_screePlot_color,
-                  cex = fitAnalysis_cex,
+                  col = fitAnalysis_screePlot_color[2],
                   axes = FALSE,
                   cex.axis = 0)
 
           # this shades the two first eigenvalues
           barplot(eigenvalues[1:2],
                   space = 0,
-                  col = "grey",
-                  cex = fitAnalysis_cex,
+                  col = fitAnalysis_screePlot_color[1],
                   axes = FALSE,
                   cex.axis = 0,
                   add = TRUE)

@@ -16,6 +16,10 @@ biplot_2d(ordination_object, ordination_method = "PCA",
   point_type = "point", point_pch = 1, point_size = 1,
   point_label = NULL, point_label_cex = 1, point_label_font = 3,
   point_label_adj = c(0.5, 0.5), point_label_adj_override = NULL,
+  arrow_color = "darkorange", arrow_mim_dist = 0, arrow_length = 0.2,
+  arrow_cex = 0.1, arrow_lwd = 2, arrow_label_cex = 1,
+  arrow_label_color = "black", arrow_label_font = 1,
+  arrow_label_adj = c(0.5, 0.5), arrow_label_adj_override = NULL,
   group_color = "black", group_star_cex = 1, group_ellipse_cex = 1,
   group_ellipse_axes = FALSE, group_label_cex = 1,
   group_legend_title = "groups", group_legend_title_pos = c(0.5, 0.85),
@@ -33,13 +37,10 @@ biplot_2d(ordination_object, ordination_method = "PCA",
   vip_legend_box_color = "white", vip_legend_key_cex = 0.8,
   vip_legend_key_margin = 0.15, vip_legend_text_cex = 1,
   vip_legend_text_font = 1, vip_legend_text_adj = 0,
-  vip_legend_text_margin = 0.25, arrow_color = "darkorange",
-  arrow_mim_dist = 0, arrow_length = 0.2, arrow_cex = 0.1,
-  arrow_lwd = 2, arrow_label_cex = 1, arrow_label_color = "black",
-  arrow_label_font = 1, arrow_label_adj = c(0.5, 0.5),
-  arrow_label_adj_override = NULL, fitAnalysis_cex = 1,
-  fitAnalysis_lwd = 3, fitAnalysis_screePlot_color = "white",
-  fitAnalysis_stress_p_color = "darkgrey",
+  vip_legend_text_margin = 0.25, fitAnalysis_lwd = 3,
+  fitAnalysis_screePlot_color = c("grey", "white"),
+  fitAnalysis_stress_cex = 1, fitAnalysis_stress_lab_cex = 1,
+  fitAnalysis_stress_axis_cex = 1, fitAnalysis_stress_p_color = "darkgrey",
   fitAnalysis_stress_l_color = "black", test_text = NULL, test_cex = 1,
   test_font = 1, test_adj = 0.5, fit_into_main = FALSE, main_fig = c(0,
   1, 0, 1), group_legend_fig = c(0.8, 0.99, 0.6, 0.9),
@@ -180,6 +181,29 @@ default value given in \code{point_label_adj}.
 The rows must be named exactly as points
 are referred in the ordination object.}
 
+\item{arrow_color}{The color or colors to be used in
+covariance arrows.}
+
+\item{arrow_mim_dist}{Numeric, the minimum distance of a arrow
+from the origin of arrows (i.e. zero covariance),
+in order for it to be displayed (range [0 = all arrows
+are displayed,1 = no arrow is displayed]).}
+
+\item{arrow_length}{Numeric, the scalar factor applied to loadings
+to resize them respect to scores. If \code{detach_arrows = TRUE},
+resizing is controlled with \code{arrow_fig}, so  this value is ignored.}
+
+\item{arrow_cex, arrow_lwd, arrow_label_cex, arrow_label_color, arrow_label_font, arrow_label_adj}{Graphical parameters of the covariance arrows and their
+labels (see \code{\link[graphics]{arrows}} and
+\code{\link[graphics]{par}}). \code{arrow_cex} is actually
+equivalent to \code{length} in \code{\link[graphics]{arrows}}.}
+
+\item{arrow_label_adj_override}{A data frame with x,y values
+to be passed to \code{adj}, overrinding the default
+value given in \code{arrow_label_adj}. The rows must
+be named exactly as variables are referred in the
+ordination object.}
+
 \item{group_color}{A vector containing the colors to
 be used in each group (applied to points, labels,
 stars and ellipses). If NULL, automatically assign
@@ -255,31 +279,8 @@ within the vips legend box. Values from 0 to 1.}
 \item{vip_legend_text_margin}{Numeric, the x position of the
 text entries in the vips legend box. Values from 0 to 1.}
 
-\item{arrow_color}{The color or colors to be used in
-covariance arrows.}
-
-\item{arrow_mim_dist}{Numeric, the minimum distance of a arrow
-from the origin of arrows (i.e. zero covariance),
-in order for it to be displayed (range [0 = all arrows
-are displayed,1 = no arrow is displayed]).}
-
-\item{arrow_length}{Numeric, the scalar factor applied to loadings
-to resize them respect to scores. If \code{detach_arrows = TRUE},
-resizing is controlled with \code{arrow_fig}, so  this value is ignored.}
-
-\item{arrow_cex, arrow_lwd, arrow_label_cex, arrow_label_color, arrow_label_font, arrow_label_adj}{Graphical parameters of the covariance arrows and their
-labels (see \code{\link[graphics]{arrows}} and
-\code{\link[graphics]{par}}). \code{arrow_cex} is actually
-equivalent to \code{length} in \code{\link[graphics]{arrows}}.}
-
-\item{arrow_label_adj_override}{A data frame with x,y values
-to be passed to \code{adj}, overrinding the default
-value given in \code{arrow_label_adj}. The rows must
-be named exactly as variables are referred in the
-ordination object.}
-
-\item{fitAnalysis_cex, fitAnalysis_lwd, fitAnalysis_screePlot_color, fitAnalysis_stress_p_color, fitAnalysis_stress_l_color}{The graphical parameters of the plot for fit analysis
-of the ordination method
+\item{fitAnalysis_lwd, fitAnalysis_screePlot_color, fitAnalysis_stress_cex, fitAnalysis_stress_lab_cex, fitAnalysis_stress_axis_cex, fitAnalysis_stress_p_color, fitAnalysis_stress_l_color}{The graphical parameters of the plot for fit analysis
+correspondint to the ordination method (Scree plot for PCA, PCoA, LDA; Shepard or Stress plot for NMDS).
 (\code{\link[graphics]{par}},
 \code{\link[vegan]{stressplot}}
 of the \code{vegan} package).}

@@ -20,29 +20,29 @@ filter_arrows <- function(loadings, min_dist = 0.5, dimensions = 2){
 
     if (dimensions == 2) {
 
-      max_x <- max(abs(loadings[, 1])) * min_dist
-      max_y <- max(abs(loadings[, 2])) * min_dist
+      max_x <- max(abs(filtered_arrows[, 1])) * min_dist
+      max_y <- max(abs(filtered_arrows[, 2])) * min_dist
 
       threshold <- sqrt((max_x ^ 2) + (max_y ^ 2))
 
-      arrows_lengths <- sqrt((loadings[, 1] ^ 2) + (loadings[, 2] ^ 2))
+      arrows_lengths <- sqrt((filtered_arrows[, 1] ^ 2) + (filtered_arrows[, 2] ^ 2))
 
       filtered_arrows <-
-        loadings[arrows_lengths > threshold, 1:2]
+        subset(filtered_arrows, arrows_lengths > threshold)
 
     } else if (dimensions == 3) {
 
-      max_x <- max(abs(loadings[, 1])) * min_dist
-      max_y <- max(abs(loadings[, 2])) * min_dist
-      max_z <- max(abs(loadings[, 3])) * min_dist
+      max_x <- max(abs(filtered_arrows[, 1])) * min_dist
+      max_y <- max(abs(filtered_arrows[, 2])) * min_dist
+      max_z <- max(abs(filtered_arrows[, 3])) * min_dist
 
       threshold <- sqrt((max_x ^ 2) + (max_y ^ 2) + (max_z ^ 2))
 
       arrows_lengths <-
-        sqrt((loadings[, 1] ^ 2) + (loadings[, 2] ^ 2) + (loadings[, 3] ^ 2))
+        sqrt((filtered_arrows[, 1] ^ 2) + (filtered_arrows[, 2] ^ 2) + (filtered_arrows[, 3] ^ 2))
 
       filtered_arrows <-
-        loadings[arrows_lengths > threshold, 1:3]
+        subset(filtered_arrows, arrows_lengths > threshold)
     }
   }
 
