@@ -1,7 +1,7 @@
 Package: biplots2d3d
 Type: Package
-Title: Create and Customize Ordination Plots (Biplots) in 2D and 3D (using rgl)
-Version: 0.0.0.9000
+Title: Create and Customize Ordination Plots (Biplots) in 2D and 3D
+Version: 1.0.0
 Authors@R: person("Andreas", "Angourakis", email = "andros.spica@gmail.com",
                   role = c("aut", "cre"))
 Description: This package allows the user to generate fully-customized two and three

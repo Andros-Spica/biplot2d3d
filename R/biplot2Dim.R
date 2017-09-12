@@ -3,7 +3,7 @@
 #'
 #' Generates a 2D biplot representing the default
 #' points/scores and loadings of an ordination object,
-#' such as a PCA produced by \code{\link[stats]{princomp}}).
+#' such as a PCA produced by \code{\link[stats]{princomp}}.
 #'
 #' @param ordination_object A R object containing a
 #'    direct and named reference to default ordination

@@ -332,7 +332,7 @@ in the plot, (\code{\link[graphics]{par}}).}
 \description{
 Generates a 2D biplot representing the default
 points/scores and loadings of an ordination object,
-such as a PCA produced by \code{\link[stats]{princomp}}).
+such as a PCA produced by \code{\link[stats]{princomp}}.
 }
 \details{
 This function allows customising virtually every
