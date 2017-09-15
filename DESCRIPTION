@@ -1,7 +1,7 @@
 Package: biplots2d3d
 Type: Package
 Title: Create and Customize Ordination Plots (Biplots) in 2D and 3D
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: person("Andreas", "Angourakis", email = "andros.spica@gmail.com",
                   role = c("aut", "cre"))
 Description: This package allows the user to generate fully-customized two and three
@@ -13,7 +13,7 @@ Description: This package allows the user to generate fully-customized two and t
     centralizes the control over many options available in these packages
     (and others), organizing them exhastively into parameters of higher level
     functions, such as biplot2Dim and biplot3Dim.
-License: MIT + file LICENSE
+License: GPL-3
 URL: https://github.com/Andros-Spica/biplot2d3d
 LazyData: TRUE
 RoxygenNote: 5.0.1

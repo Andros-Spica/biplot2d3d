@@ -480,7 +480,7 @@ biplot_2d <-
            y_title_font = 2,
            subtitle = NULL,
            subtitle_position = "bottomleft",
-           subtitle_cex = 1,
+           subtitle_cex = 1.2,
 
            point_type = "point",
            point_pch = 1,
@@ -1365,7 +1365,7 @@ biplot_2d <-
           # for the NMDS, the stress plot is shown
           par(fig = fitAnalysis_fig_,
               new = T,
-              mar = c(5, 5, 1, 1))
+              mar = c(1, 0.1, 1, 0.1))
 
           vegan::stressplot(ordination_object,
                      p.col = fitAnalysis_stress_p_color,
