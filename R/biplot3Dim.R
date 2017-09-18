@@ -1312,7 +1312,10 @@ get_colors <- function(groups, color_palette = palette()) {
 
 }
 
-#' Create an animated GIF with the rgl device
+#' Create an animated GIF and a snapshot from the rgl device
+#'
+#' Creates a sequence of images while rotating one or more axes and collapsing them
+#' into a GIF file. It uses \code{\link[rgl]{movie3d}} so you must install ImageMagick (www.imagemagick.org) in order for it to work.
 #'
 #' @param directory The directory within the working directory. For example, "MyFolder/".
 #' @param file_name The name of the output file.

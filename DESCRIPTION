@@ -1,4 +1,4 @@
-Package: biplots2d3d
+Package: biplot2d3d
 Type: Package
 Title: Create and Customize Ordination Plots (Biplots) in 2D and 3D
 Version: 1.0.1
