@@ -34,4 +34,3 @@ within \code{ordination_object} was previously transformed.}
 Calculate the lambda factor to scale biplot dimensions.
 The code is a snippet of \code{\link[stats]{biplot.princomp}}).
 }
-

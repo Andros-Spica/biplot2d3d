@@ -100,4 +100,3 @@ remove(modIris)
 \seealso{
 \code{\link{star_3d}}
 }
-

@@ -16,7 +16,7 @@ Description: This package allows the user to generate fully-customized two and t
 License: GPL-3
 URL: https://github.com/Andros-Spica/biplot2d3d
 LazyData: TRUE
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 Imports:
   ade4,
   heplots,

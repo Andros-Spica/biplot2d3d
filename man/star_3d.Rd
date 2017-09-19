@@ -74,4 +74,3 @@ remove(setosa)
    \code{\link[rgl]{spheres3d}}, \code{\link[rgl]{segments3d}},
    \code{\link[rgl]{texts3d}}
 }
-

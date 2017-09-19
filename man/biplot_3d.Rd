@@ -477,4 +477,3 @@ Gabriel, K. R. (1971). The biplot graphical display of
   matrices with applications to principal component analysis.
   Biometrika, 58, 453-467.
 }
-

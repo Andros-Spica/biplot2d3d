@@ -78,4 +78,3 @@ remove(setosa)
    \code{\link[rgl]{ellipse3d}}, \code{\link[rgl]{wire3d}},
    \code{\link[rgl]{shade3d}}, \code{\link[rgl]{texts3d}}
 }
-

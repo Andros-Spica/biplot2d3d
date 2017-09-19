@@ -17,4 +17,3 @@ Return a vector of colors matching the levels of groups.
 \description{
 Get colors for the different levels of a factor variable
 }
-

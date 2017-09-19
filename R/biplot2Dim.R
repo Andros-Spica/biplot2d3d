@@ -736,21 +736,23 @@ biplot_2d <-
     if (is.null(subtitle)) {
 
       # If no subtitle is given
-      if (ordination_method != "PCA") {
+      if (!is.null(ordination_method)) {
+        if (ordination_method != "PCA") {
 
-        # If the method is not a PCA,
-        # no subtitle is displayed
-        # TODO: useful default subtitle for other methos
-        sub <- ""
+          # If the method is not a PCA,
+          # no subtitle is displayed
+          # TODO: useful default subtitle for other methos
+          sub <- ""
 
-      } else {
+        } else {
 
-        # If the method is a PCA,
-        # the percentage of variance represented is displayed
-        cumVar <- cumsum((sdev) ^ 2) / sum(sdev ^ 2)
-        R2 <- as.character(100 * round(cumVar[2], digits = 4))
-         sub <- paste(R2, "% of variance explained", sep = "")
+          # If the method is a PCA,
+          # the percentage of variance represented is displayed
+          cumVar <- cumsum((sdev) ^ 2) / sum(sdev ^ 2)
+          R2 <- as.character(100 * round(cumVar[2], digits = 4))
+          sub <- paste(R2, "% of variance explained", sep = "")
 
+        }
       }
     }
 

@@ -101,4 +101,3 @@ remove(modIris)
 \seealso{
 \code{\link{ellipsoid_3d}}, \code{\link[rgl]{spheres3d}}
 }
-

@@ -18,4 +18,3 @@ of arrow's points to their origin. 1 return no variables.}
 \description{
 Filter the variables most represented in the firsts dimensions of an ordination object.
 }
-

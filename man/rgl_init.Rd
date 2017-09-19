@@ -45,4 +45,3 @@ rgl_init(width = 400, height = 300)
    \code{\link[rgl]{par3d}}, \code{\link[rgl]{rgl.open}},
    \code{\link[rgl]{rgl.close}}, \code{\link[rgl]{rgl.clear}}
 }
-

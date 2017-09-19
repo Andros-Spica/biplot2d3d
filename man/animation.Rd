@@ -2,7 +2,7 @@
 % Please edit documentation in R/biplot3Dim.R
 \name{animation}
 \alias{animation}
-\title{Create an animated GIF with the rgl device}
+\title{Create an animated GIF and a snapshot from the rgl device}
 \usage{
 animation(directory = "", file_name = "animation", axis_spin = c(0, 1, 0),
   axis_spin_rpm = 5)
@@ -17,6 +17,6 @@ animation(directory = "", file_name = "animation", axis_spin = c(0, 1, 0),
 \item{axis_spin_rpm}{the velocity of the spin. See \code{\link[rgl]{movie3d}}.}
 }
 \description{
-Create an animated GIF with the rgl device
+Creates a sequence of images while rotating one or more axes and collapsing them
+into a GIF file. It uses \code{\link[rgl]{movie3d}} so you must install ImageMagick (www.imagemagick.org) in order for it to work.
 }
-

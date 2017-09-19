@@ -108,4 +108,3 @@ points3d(iris[iris$Species == "virginica", 1],
    \code{\link[rgl]{aspect3d}}, \code{\link[rgl]{axis3d}},
    \code{\link[rgl]{bbox3d}}
 }
-

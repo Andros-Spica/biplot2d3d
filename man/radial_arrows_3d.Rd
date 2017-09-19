@@ -88,4 +88,3 @@ radial_arrows_3d(x = pca$loadings[,1],
 \seealso{
 \code{\link[heplots]{arrow3d}},\code{\link{biplot_3d}}
 }
-
