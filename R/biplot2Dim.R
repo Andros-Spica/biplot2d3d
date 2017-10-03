@@ -556,7 +556,7 @@ biplot_2d <-
 
            test_text = NULL,
            test_spacing_paragraph = 0.8,
-           test_spacing_line = 0.5,
+           test_spacing_line = 0.8,
            test_cex = 1,
            test_font = 1,
            test_adj = 0.5,
