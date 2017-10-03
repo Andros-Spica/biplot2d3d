@@ -251,7 +251,7 @@ the text entries in the group legend.}
 
 \item{vip_pch}{A character vector containing the
 characters used for the vips markings under
-each criterium.}
+each criterion.}
 
 \item{vip_cex, vip_lwd, vip_font, vip_adj}{The graphical parameters of the vips markings.}
 

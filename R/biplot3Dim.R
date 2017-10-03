@@ -144,7 +144,8 @@
 #'    The text parameters of the text entries in the groups legend.
 #'
 #' @param vip_pch A character vector containing the characters
-#'    used for the vips markings.
+#'    used for the vips markings under
+#'    each criterion.
 #' @param vip_cex,vip_colors,vip_font,vip_adj,vip_alpha
 #'    The graphical parameters of the vips markings.
 #' @param vip_legend_title Character, the title of the vips
@@ -1139,7 +1140,7 @@ biplot_3d <-
 
     if (!is.null(vips)) {
 
-      # Create markings following each criterium
+      # Create markings following each criterion
       # (column or list element in vips)
       for (i in 1:length(vips)) {
 

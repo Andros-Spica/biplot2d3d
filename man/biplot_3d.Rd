@@ -235,7 +235,8 @@ text entries in the groups legend.}
 \item{group_legend_text_cex, group_legend_text_font, group_legend_text_adj}{The text parameters of the text entries in the groups legend.}
 
 \item{vip_pch}{A character vector containing the characters
-used for the vips markings.}
+used for the vips markings under
+each criterion.}
 
 \item{vip_cex, vip_colors, vip_font, vip_adj, vip_alpha}{The graphical parameters of the vips markings.}
 

@@ -169,7 +169,7 @@
 #' @param vip_color The color or colors to be used in vip markings.
 #' @param vip_pch A character vector containing the
 #'    characters used for the vips markings under
-#'    each criterium.
+#'    each criterion.
 #' @param vip_cex,vip_lwd,vip_font,vip_adj
 #'    The graphical parameters of the vips markings.
 #' @param vip_legend_title Character, the title of the vips
@@ -1074,7 +1074,7 @@ biplot_2d <-
 
       if (!is.null(vips)) {
 
-        # Create markings following each criterium
+        # Create markings following each criterion
         # (column or list element in vips)
         for (i in 1:length(vips)){
 
@@ -1435,10 +1435,11 @@ biplot_2d <-
 
             for (j in 2:length((test_text[[i]])))
             {
-
               pos_y <-
                 c(pos_y,
-                  first_line_pos_y - test_spacing_line * ((j - 1) / (length((test_text[[i]])))) * (first_line_pos_y - next_paragraph_pos_y)
+                  first_line_pos_y - test_spacing_line *
+                    ((j - 1) / (length((test_text[[i]])))) *
+                    (first_line_pos_y - next_paragraph_pos_y)
                   )
             }
           }
