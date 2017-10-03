@@ -533,7 +533,7 @@ biplot_3d <-
 
            test_text = NULL,
            test_spacing_paragraph = 0.8,
-           test_spacing_line = 0.8,
+           test_spacing_line = 0.5,
            test_cex = 1,
            test_font = 1,
            test_adj = 0.5,
@@ -541,7 +541,7 @@ biplot_3d <-
            group_legend_fig =    c(0.73, 0.99,  0.6, 0.90),
            vip_legend_fig =      c(0.03, 0.25,  0.1,  0.3),
            fitAnalysis_fig =     c(0.02, 0.35, 0.08,  0.3),
-           test_fig =            c(   0,  0.3,  0.8,    1),
+           test_fig =            c(   0,  0.3,  0.8, 0.99),
 
            new_device = FALSE,
            bg_color = "white",

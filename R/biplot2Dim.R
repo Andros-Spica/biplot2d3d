@@ -556,18 +556,18 @@ biplot_2d <-
 
            test_text = NULL,
            test_spacing_paragraph = 0.8,
-           test_spacing_line = 0.8,
+           test_spacing_line = 0.5,
            test_cex = 1,
            test_font = 1,
            test_adj = 0.5,
 
            fit_into_main = FALSE,
-           main_fig =          c(   0,    1,      0,     1),
+           main_fig =          c(  0,     1,     0,     1),
            group_legend_fig = c( 0.8,  0.99,   0.6,  0.90),
            vip_legend_fig =   c(0.78,  0.99,   0.3,  0.55),
            arrow_fig =        c(0.69,  0.99,  0.01,  0.31),
            fitAnalysis_fig =  c(0.02,  0.35,  0.06,  0.25),
-           test_fig =         c(   0,   0.3,   0.8,     1),
+           test_fig =         c(   0,   0.3,   0.8,  0.99),
            x_title_fig =      c(0.25,     1,  0.85,     1),
            y_title_fig =      c(0.91,     1,     0,     1),
 

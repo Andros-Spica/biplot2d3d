@@ -64,10 +64,10 @@ biplot_3d(ordination_object, ordination_method = "PCA",
   fitAnalysis_screePlot_color = "white",
   fitAnalysis_stress_p_color = "darkgrey",
   fitAnalysis_stress_l_color = "black", test_text = NULL,
-  test_spacing_paragraph = 0.8, test_spacing_line = 0.8, test_cex = 1,
+  test_spacing_paragraph = 0.8, test_spacing_line = 0.5, test_cex = 1,
   test_font = 1, test_adj = 0.5, group_legend_fig = c(0.73, 0.99, 0.6,
   0.9), vip_legend_fig = c(0.03, 0.25, 0.1, 0.3), fitAnalysis_fig = c(0.02,
-  0.35, 0.08, 0.3), test_fig = c(0, 0.3, 0.8, 1), new_device = FALSE,
+  0.35, 0.08, 0.3), test_fig = c(0, 0.3, 0.8, 0.99), new_device = FALSE,
   bg_color = "white", view_theta = 15, view_phi = 20, view_fov = 60,
   view_zoom = 0.8, width = 800, height = 600, family = "sans")
 }
