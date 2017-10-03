@@ -1424,21 +1424,21 @@ biplot_2d <-
         for (i in 1:length(test_text)) {
 
           first_line_pos_y <-
-            1 - test_spacing_paragraph * ( i / length(test_text) )
+            1 - test_spacing_paragraph * ( (i - .9) / length(test_text) )
 
           pos_y <- first_line_pos_y
 
           if (length(test_text[[i]]) > 1) {
 
             next_paragraph_pos_y <-
-              1 - test_spacing_paragraph * ( (i + 1) / length(test_text) )
+              1 - test_spacing_paragraph * ( i / length(test_text) )
 
             for (j in 2:length((test_text[[i]])))
             {
 
               pos_y <-
                 c(pos_y,
-                  first_line_pos_y - test_spacing_line * ((j-1) / (length((test_text[[i]])))) * (first_line_pos_y - next_paragraph_pos_y)
+                  first_line_pos_y - test_spacing_line * ((j - 1) / (length((test_text[[i]])))) * (first_line_pos_y - next_paragraph_pos_y)
                   )
             }
           }
