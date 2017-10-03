@@ -41,7 +41,8 @@ biplot_2d(ordination_object, ordination_method = "PCA",
   fitAnalysis_screePlot_color = c("grey", "white"),
   fitAnalysis_stress_cex = 1, fitAnalysis_stress_lab_cex = 1,
   fitAnalysis_stress_axis_cex = 1, fitAnalysis_stress_p_color = "darkgrey",
-  fitAnalysis_stress_l_color = "black", test_text = NULL, test_cex = 1,
+  fitAnalysis_stress_l_color = "black", test_text = NULL,
+  test_spacing_paragraph = 0.8, test_spacing_line = 0.8, test_cex = 1,
   test_font = 1, test_adj = 0.5, fit_into_main = FALSE, main_fig = c(0,
   1, 0, 1), group_legend_fig = c(0.8, 0.99, 0.6, 0.9),
   vip_legend_fig = c(0.78, 0.99, 0.3, 0.55), arrow_fig = c(0.69, 0.99, 0.01,
@@ -285,8 +286,13 @@ correspondint to the ordination method (Scree plot for PCA, PCoA, LDA; Shepard o
 \code{\link[vegan]{stressplot}}
 of the \code{vegan} package).}
 
-\item{test_text}{A character vector with the lines of
-text presenting the results of statistical tests.}
+\item{test_text}{A list of character vectors or expressions with the
+lines of text presenting the results of statistical tests. A example
+structure would be: \code{list(c("first line", "second line"), "second paragraph"), bquote("third paragraph" ~ alpha == 2)}.}
+
+\item{test_spacing_paragraph, test_spacing_line}{Numeric, relative spacing
+between paragraphs (list elements) and lines (character elements
+within a list element, if more than one).}
 
 \item{test_cex, test_font, test_adj}{The parameters of
 the text with the test results

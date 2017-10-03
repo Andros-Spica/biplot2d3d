@@ -188,11 +188,15 @@
 #'    \code{\link[vegan]{stressplot}}
 #'    of the \code{vegan} package).
 #'
-#' @param test_text Character, vector with the lines of
-#'    text presenting the results of statistical tests.
-#' @param test_cex,test_font,test_adj The text parameters
-#'    of the text in the test results displayed in the
-#'    fixed 2D canvas (\code{\link[graphics]{par}}).
+#' @param test_text A list of character vectors or expressions with the
+#'    lines of text presenting the results of statistical tests. A example
+#'    structure would be: \code{list(c("first line", "second line"), "second paragraph"), bquote("third paragraph" ~ alpha == 2)}.
+#' @param test_spacing_paragraph,test_spacing_line Numeric, relative spacing
+#'    between paragraphs (list elements) and lines (character elements
+#'    within a list element, if more than one).
+#' @param test_cex,test_font,test_adj The parameters of
+#'    the text with the test results
+#'    (\code{\link[graphics]{par}}).
 #'
 #' @param group_legend_fig,vip_legend_fig,fitAnalysis_fig,test_fig The \code{fig} parameter (\code{\link[graphics]{par}}) to
 #'    place in the display region of the graphics device,
@@ -527,6 +531,8 @@ biplot_3d <-
            fitAnalysis_stress_l_color = "black",
 
            test_text = NULL,
+           test_spacing_paragraph = 0.8,
+           test_spacing_line = 0.8,
            test_cex = 1,
            test_font = 1,
            test_adj = 0.5,
@@ -895,7 +901,25 @@ biplot_3d <-
 
         for (i in 1:length(test_text)) {
 
-          pos_y <- 1 - ((i + 1) /  (length(test_text) + 1.5))
+          first_line_pos_y <-
+            1 - test_spacing_paragraph * ( i / length(test_text) )
+
+          pos_y <- first_line_pos_y
+
+          if (length(test_text[[i]]) > 1) {
+
+            next_paragraph_pos_y <-
+              1 - test_spacing_paragraph * ( (i + 1) / length(test_text) )
+
+            for (j in 2:length((test_text[[i]])))
+            {
+
+              pos_y <-
+                c(pos_y,
+                  first_line_pos_y - test_spacing_line * ((j-1) / (length((test_text[[i]])))) * (first_line_pos_y - next_paragraph_pos_y)
+                )
+            }
+          }
 
           text(x = 0, y = pos_y,
                labels = test_text[[i]],

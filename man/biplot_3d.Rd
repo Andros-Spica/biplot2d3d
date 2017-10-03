@@ -63,7 +63,8 @@ biplot_3d(ordination_object, ordination_method = "PCA",
   arrow_label_alpha = 1, fitAnalysis_cex = 3, fitAnalysis_lwd = 3,
   fitAnalysis_screePlot_color = "white",
   fitAnalysis_stress_p_color = "darkgrey",
-  fitAnalysis_stress_l_color = "black", test_text = NULL, test_cex = 1,
+  fitAnalysis_stress_l_color = "black", test_text = NULL,
+  test_spacing_paragraph = 0.8, test_spacing_line = 0.8, test_cex = 1,
   test_font = 1, test_adj = 0.5, group_legend_fig = c(0.73, 0.99, 0.6,
   0.9), vip_legend_fig = c(0.03, 0.25, 0.1, 0.3), fitAnalysis_fig = c(0.02,
   0.35, 0.08, 0.3), test_fig = c(0, 0.3, 0.8, 1), new_device = FALSE,
@@ -286,12 +287,17 @@ of the ordination method
 \code{\link[vegan]{stressplot}}
 of the \code{vegan} package).}
 
-\item{test_text}{Character, vector with the lines of
-text presenting the results of statistical tests.}
+\item{test_text}{A list of character vectors or expressions with the
+lines of text presenting the results of statistical tests. A example
+structure would be: \code{list(c("first line", "second line"), "second paragraph"), bquote("third paragraph" ~ alpha == 2)}.}
 
-\item{test_cex, test_font, test_adj}{The text parameters
-of the text in the test results displayed in the
-fixed 2D canvas (\code{\link[graphics]{par}}).}
+\item{test_spacing_paragraph, test_spacing_line}{Numeric, relative spacing
+between paragraphs (list elements) and lines (character elements
+within a list element, if more than one).}
+
+\item{test_cex, test_font, test_adj}{The parameters of
+the text with the test results
+(\code{\link[graphics]{par}}).}
 
 \item{group_legend_fig, vip_legend_fig, fitAnalysis_fig, test_fig}{The \code{fig} parameter (\code{\link[graphics]{par}}) to
 place in the display region of the graphics device,
