@@ -12,7 +12,7 @@ Description: This package allows the user to generate fully-customized two and t
     are used to built 2d and 3d plots, respectively. The biplots2d3d package
     centralizes the control over many options available in these packages
     (and others), organizing them exhastively into parameters of higher level
-    functions, such as biplot2Dim and biplot3Dim.
+    functions, such as biplot_2d and biplot_3d.
 License: GPL-3
 URL: https://github.com/Andros-Spica/biplot2d3d
 LazyData: TRUE
