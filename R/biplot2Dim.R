@@ -1007,6 +1007,7 @@ biplot_2d <-
                                 height = height / 100,
                                 horizontal = FALSE,
                                 paper = "special",
+                                onefile = FALSE,
                                 family = family,
                                 colormodel = "cmyk")
         } else
