@@ -1354,8 +1354,6 @@ animation <- function(directory = "",
                       axis_spin = c(0, 1, 0),
                       axis_spin_rpm = 5){
 
-  if (directory == "") directory <- tempdir()
-
   # snapshot
   rgl::rgl.snapshot(filename = paste(directory,
                                      paste(file_name,"_snapshot.png", sep=""),
