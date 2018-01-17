@@ -234,7 +234,7 @@
 #' @param directory Character, the directory within the
 #'    working directory. For example, "MyFolder/".
 #' @param file_name Character, the name of the output file.
-#' @param width,height Numeric, the dimensions of the output image.
+#' @param width,height Numeric, the dimensions of the output image. For 'eps' files, dimensions are scaled down by 100 (e.g., X / 100).
 #' @param family Character, the font family used in every text
 #'    in the plot, (\code{\link[graphics]{par}}).
 #'
