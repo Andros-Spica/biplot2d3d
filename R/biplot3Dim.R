@@ -1355,7 +1355,7 @@ animation <- function(directory = "",
                       axis_spin_rpm = 5){
 
   # snapshot
-  rgl::rgl.snapshot(filename = paste(directory,
+  rgl::rgl.snapshot(filename = paste(getwd(), directory,
                                      paste(file_name,"_snapshot.png", sep=""),
                                      sep="/"))
 
@@ -1363,7 +1363,7 @@ animation <- function(directory = "",
   rgl::movie3d(rgl::spin3d(axis = axis_spin,
                            rpm = axis_spin_rpm),
                duration = (60 / axis_spin_rpm),
-               dir = directory,
+               dir = paste(getwd(), directory),
                movie = file_name)
 
 }
