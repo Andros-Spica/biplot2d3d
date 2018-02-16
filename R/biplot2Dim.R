@@ -140,7 +140,13 @@
 #'    size or scale of the stars, ellipses, and labels
 #'    representing groups passed to \code{\link[ade4]{s.class}}
 #'    of the \code{ade4} package. Zero values render these
-#'    elements invisible.
+#'    elements invisible. NOTE: These are inertia ellipses, which,
+#'    in words of ade4's co-author Thibaut Jombart,
+#'    "are graphical summaries of a cloud of points." They will
+#'    be confidence ellipses if points were sampled from a
+#'    normal distribution for all variables concerned. In this case,
+#'    group_ellipse_cex controls the degree of confidence (e.g.,
+#'    1.5 corresponds to 67% and 2.5 to 95%).
 #' @param group_ellipse_axes Logical, wheter to show
 #'    the ellipses axes, passed to \code{axesell} in
 #'    \code{\link[ade4]{s.class}} of the \code{ade4} package.
@@ -508,7 +514,7 @@ biplot_2d <-
 
            group_color = "black",
            group_star_cex = 1,
-           group_ellipse_cex = 1,
+           group_ellipse_cex = 2.5,
            group_ellipse_axes = FALSE,
            group_label_cex = 1,
            group_legend_title = "groups",
