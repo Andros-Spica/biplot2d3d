@@ -33,6 +33,6 @@ devtools::install_github("Andros-Spica/biplot2d3d")
 
 ## How to use
 
-In the future, this package will have a tutorial referenced here. For now, please read the examples contained in the documentation of the two main functions, typing ?biplot_2d and ?biplot_3d after installing and loading the package.
+In the future, this package will have a tutorial referenced here. For now, please read the examples contained in the documentation of the two main functions, typing `?biplot_2d` and `?biplot_3d` in the R console after installing and loading the package.
 
 Please see the tutorial on cerUB package (<https://github.com/Andros-Spica/cerUB_tutorial>), which contains several examples of biplot2d3d applications.
