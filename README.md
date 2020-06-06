@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/82170259.svg)](https://zenodo.org/badge/latestdoi/82170259)
+
 # biplot2d3d: creation of customizable biplots, both in two and three dimensions
 
 R package combining functionalities of other packages to create highly-customizable biplots. 
